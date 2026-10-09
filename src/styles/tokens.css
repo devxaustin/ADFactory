@@ -1,0 +1,34 @@
+/* Design tokens. Change the look of the whole site from this one file. */
+:root {
+  /* Color: concrete floor, steel machinery, hazard paint, blueprint ink */
+  --concrete: #bdbcb6;
+  --slab: #d8d7d2;
+  --steel: #1d2023;
+  --hazard: #f2c200;
+  --blueprint: #2340f0;
+
+  /* Type: one family, three widths. Expanded for titles, normal for reading,
+     condensed for labels and readouts. */
+  --font: 'Archivo Variable', 'Arial Narrow', Arial, sans-serif;
+  --wdth-display: 125;
+  --wdth-body: 100;
+  --wdth-label: 75;
+
+  /* Scale (1.25 ratio from 1.0625rem body) */
+  --step--1: 0.875rem;
+  --step-0: 1.0625rem;
+  --step-1: 1.3rem;
+  --step-2: 1.65rem;
+  --step-3: 2.1rem;
+  --step-hero: clamp(2.6rem, 9.2vw, 8.5rem);
+
+  /* Space */
+  --gap: 1.5rem;
+  --gutter: clamp(1rem, 4vw, 3rem);
+  --measure: 62ch;
+
+  /* Construction: hard edges, thick lines, no softness */
+  --line: 4px;
+  --line-thin: 3px;
+  --offset: 8px;
+}

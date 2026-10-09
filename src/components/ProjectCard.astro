@@ -1,0 +1,183 @@
+---
+// One product on the line. The same component renders at three levels of
+// finish: sketched (prototype), under construction (production), solid (shipped).
+interface Props {
+  id: string;
+  title: string;
+  summary: string;
+  stage: 'prototype' | 'production' | 'shipped';
+  type: string;
+  year: number;
+  serial: number;
+  progress?: number;
+  tags?: string[];
+}
+
+const { id, title, summary, stage, type, year, serial, progress = 0, tags = [] } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const href = `${base}projects/${id}/`;
+const serialText = `No. ${String(serial).padStart(3, '0')}`;
+const SEGMENTS = 10;
+const filled = Math.round((progress / 100) * SEGMENTS);
+---
+
+<article class="card" data-stage={stage}>
+  <div class="plate label">
+    <span>{serialText}</span>
+    <span>{type}, {year}</span>
+  </div>
+
+  <h3 class="title"><a href={href}>{title}</a></h3>
+  <p class="summary">{summary}</p>
+
+  {
+    stage === 'production' && (
+      <div class="meter" role="img" aria-label={`${progress} percent complete`}>
+        {Array.from({ length: SEGMENTS }, (_, i) => (
+          <span class:list={['seg', { on: i < filled }]} />
+        ))}
+        <span class="pct label">{progress}%</span>
+      </div>
+    )
+  }
+
+  {
+    tags.length > 0 && (
+      <ul class="tags label">
+        {tags.map((t) => (
+          <li>{t}</li>
+        ))}
+      </ul>
+    )
+  }
+</article>
+
+<style>
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    padding: 1.25rem 1.25rem 1.4rem;
+    min-height: 15rem;
+    transition: transform 120ms steps(2), box-shadow 120ms steps(2);
+  }
+
+  /* Whole card is clickable through the title link */
+  .title a {
+    text-decoration: none;
+  }
+  .title a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+  .title {
+    font-size: var(--step-2);
+  }
+  .summary {
+    max-width: 44ch;
+  }
+
+  .plate {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: var(--step--1);
+    padding-bottom: 0.6rem;
+    border-bottom: var(--line-thin) solid currentColor;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: auto 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: var(--step--1);
+  }
+  .tags li {
+    padding: 0.1rem 0.5rem;
+    border: 2px solid currentColor;
+  }
+
+  /* Prototype: drawn on blueprint grid, dashed, unfinished */
+  .card[data-stage='prototype'] {
+    background-color: var(--slab);
+    background-image:
+      linear-gradient(rgba(35, 64, 240, 0.16) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(35, 64, 240, 0.16) 1px, transparent 1px);
+    background-size: 1.25rem 1.25rem;
+    border: var(--line-thin) dashed var(--blueprint);
+    color: var(--blueprint);
+  }
+  .card[data-stage='prototype'] .summary {
+    color: var(--steel);
+  }
+
+  /* In production: solid frame, hazard header, progress meter */
+  .card[data-stage='production'] {
+    background: var(--slab);
+    border: var(--line) solid var(--steel);
+    border-top: 1.1rem solid var(--hazard);
+    box-shadow: inset 0 -0.35rem 0 var(--steel);
+  }
+  .meter {
+    display: flex;
+    align-items: stretch;
+    gap: 3px;
+    height: 1.4rem;
+  }
+  .seg {
+    flex: 1;
+    border: 2px solid var(--steel);
+    background: transparent;
+  }
+  .seg.on {
+    background: var(--steel);
+  }
+  .pct {
+    align-self: center;
+    margin-left: 0.5rem;
+    min-width: 2.6rem;
+  }
+
+  /* Shipped: solid steel, hazard serial plate, finished */
+  .card[data-stage='shipped'] {
+    background: var(--steel);
+    color: var(--slab);
+    border: var(--line) solid var(--steel);
+    box-shadow: var(--offset) var(--offset) 0 var(--hazard);
+  }
+  .card[data-stage='shipped'] .plate {
+    border-bottom-color: var(--hazard);
+    color: var(--hazard);
+  }
+
+  .card:hover,
+  .card:focus-within {
+    transform: translate(-3px, -3px);
+  }
+  .card[data-stage='shipped']:hover,
+  .card[data-stage='shipped']:focus-within {
+    box-shadow: calc(var(--offset) + 3px) calc(var(--offset) + 3px) 0 var(--hazard);
+  }
+  .card[data-stage='prototype']:hover,
+  .card[data-stage='prototype']:focus-within {
+    box-shadow: var(--offset) var(--offset) 0 var(--steel);
+  }
+  .card[data-stage='production']:hover,
+  .card[data-stage='production']:focus-within {
+    box-shadow:
+      inset 0 -0.35rem 0 var(--steel),
+      var(--offset) var(--offset) 0 var(--steel);
+  }
+  .card:focus-within {
+    outline: var(--line) solid var(--blueprint);
+    outline-offset: 4px;
+  }
+  .card[data-stage='shipped']:focus-within {
+    outline-color: var(--hazard);
+  }
+</style>
