@@ -12,7 +12,7 @@ const {
   description = 'Projects, art, and music from Austin Devereux Jr., arranged by how finished they are.',
 } = Astro.props;
 
-const base = import.meta.env.BASE_URL;
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 ---
 
 <!doctype html>

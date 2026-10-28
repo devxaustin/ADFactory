@@ -14,7 +14,7 @@ interface Props {
 }
 
 const { id, title, summary, stage, type, year, serial, progress = 0, tags = [] } = Astro.props;
-const base = import.meta.env.BASE_URL;
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 const href = `${base}projects/${id}/`;
 const serialText = `No. ${String(serial).padStart(3, '0')}`;
 const SEGMENTS = 10;
