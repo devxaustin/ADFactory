@@ -5,3 +5,6 @@ dist/
 .env.*
 .DS_Store
 npm-debug.log*
+
+# Built from games/monkey-island on every build
+public/monkey-island/

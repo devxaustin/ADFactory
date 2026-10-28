@@ -5,7 +5,9 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "npm run build:game && astro build",
+    "build:game": "npm ci --prefix games/monkey-island && npm run build --prefix games/monkey-island",
+    "dev:game": "npm run dev --prefix games/monkey-island",
     "preview": "astro preview",
     "astro": "astro"
   },
