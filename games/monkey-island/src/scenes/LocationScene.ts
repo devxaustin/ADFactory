@@ -30,6 +30,8 @@ const OPPOSITE: Record<Side, Side> = { left: 'right', right: 'left', top: 'botto
 const EXIT_HALF_GAP_X = 36;
 const EXIT_HALF_GAP_Y = 30;
 const EDGE_INSET = 18;
+/** After a dialogue closes, ignore interact presses this long so mashing E can't reopen it. */
+const REOPEN_COOLDOWN_MS = 450;
 const TEXT = { fontFamily: 'monospace', fontSize: '10px', color: '#ffffff' };
 
 /** One class renders every location from data in data/locations.ts. */
@@ -208,7 +210,7 @@ export class LocationScene extends Phaser.Scene {
     this.shadow.setPosition(body.center.x, body.bottom + 1).setDepth(body.bottom - 1);
     this.updateNearby();
 
-    if (!this.hud.isDialogueOpen && this.nearby && pressed) {
+    if (!this.hud.isDialogueOpen && performance.now() - this.hud.lastClosedAt > REOPEN_COOLDOWN_MS && this.nearby && pressed) {
       this.interact(this.nearby);
     }
   }
@@ -302,9 +304,9 @@ export class LocationScene extends Phaser.Scene {
   private talk(target: Spawned): void {
     const { def } = target;
     const trade = def.trade;
-    if (!trade) return this.hud.showDialogue(def.lines, def.label);
-    if (GameState.hasFlag(trade.flag)) return this.hud.showDialogue(trade.afterLines, def.label);
-    if (!GameState.has(trade.wants)) return this.hud.showDialogue(def.lines, def.label);
+    if (!trade) return this.say(target, def.lines, 'idle');
+    if (GameState.hasFlag(trade.flag)) return this.say(target, trade.afterLines, 'after');
+    if (!GameState.has(trade.wants)) return this.say(target, def.lines, 'idle');
 
     const mg = trade.minigame;
     if (!mg) return this.completeTrade(def, trade);
@@ -313,7 +315,35 @@ export class LocationScene extends Phaser.Scene {
     this.hud.showDialogue(first ? mg.intro : [mg.retry], def.label, () => this.runMinigame(def, trade));
   }
 
+  /**
+   * Small talk. The first time in a given state it opens the dialogue box; every
+   * repeat is a non-blocking speech bubble so you can never get stuck re-reading it.
+   */
+  private say(target: Spawned, lines: string[], state: 'idle' | 'after'): void {
+    if (lines.length === 0) return;
+    const n = GameState.bump(`spoke:${target.def.id}:${state}`);
+    if (n === 1) return this.hud.showDialogue(lines, target.def.label);
+    this.bubble(target.sprite, lines[(n - 2) % lines.length]);
+  }
+
+  private bubbleText?: Phaser.GameObjects.Text;
+
+  private bubble(anchor: Phaser.GameObjects.Sprite, line: string): void {
+    this.bubbleText?.destroy();
+    const t = this.add
+      .text(0, 0, line, { ...TEXT, fontSize: '9px', backgroundColor: '#0b1020e6', padding: { x: 5, y: 3 }, wordWrap: { width: 150 }, align: 'center' })
+      .setOrigin(0.5, 1)
+      .setDepth(10002);
+    t.setPosition(Phaser.Math.Clamp(anchor.x, 90, GAME_W - 90), Math.max(t.height + 22, anchor.y - anchor.displayHeight / 2 - 6));
+    this.bubbleText = t;
+    this.time.delayedCall(2600, () => {
+      if (this.bubbleText !== t) return;
+      this.tweens.add({ targets: t, alpha: 0, duration: 250, onComplete: () => t.destroy() });
+    });
+  }
+
   private completeTrade(def: Interactable, trade: Trade): void {
+    GameState.bump(`spoke:${def.id}:after`); // the trade dialogue counts as the first 'after' chat
     GameState.remove(trade.wants);
     if (trade.gives) GameState.add(trade.gives);
     GameState.setFlag(trade.flag);

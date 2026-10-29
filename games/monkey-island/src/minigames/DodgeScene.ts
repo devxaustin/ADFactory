@@ -11,12 +11,13 @@ interface Band {
   streak?: Phaser.GameObjects.Image;
   t: number;
   warn: number;
+  /** How long the lunge lasts (and stays dangerous). */
+  dur: number;
   active: boolean;
 }
 
 const THICK = 30;
-const ACTIVE = 0.28;
-const PLAYER_SPEED = 115;
+const PLAYER_SPEED = 120;
 const THROW_WINDOW = 4.5;
 const THROW_RANGE = 70;
 const WAVES: Kind[][] = [['h'], ['v'], ['h', 'v'], ['v', 'h'], ['h', 'v', 'h']];
@@ -30,7 +31,7 @@ const TIGER_CENTER = { x: 240, y: 150 };
  */
 export class DodgeScene extends MinigameScene {
   protected readonly title = 'DODGE THE TIGER';
-  protected readonly hint = 'Move: WASD / arrows\nLeave the red lanes before the tiger lunges.\nWhen it tires, get close and press E to toss the cheesesteak.';
+  protected readonly hint = 'Move: WASD / arrows\n\nA red lane shows where the tiger will lunge.\nLeave the lane before it strikes. The lunges get faster each wave.\n\nWhen the tiger tires, get close and press E to toss the cheesesteak.';
 
   private px = 80;
   private py = 150;
@@ -71,15 +72,30 @@ export class DodgeScene extends MinigameScene {
   }
 
   protected begin(): void {
-    this.startWave();
+    // Hold the wave logic off until the first wave actually spawns.
+    this.waiting = true;
+    this.info.setText('Get ready...');
+    this.time.delayedCall(1000, () => this.startWave());
   }
 
   private get totalWaves(): number {
     return WAVES.length;
   }
 
-  private warnTime(): number {
-    return Math.max(0.55, 1.0 - 0.06 * this.waveNo - 0.07 * (this.difficulty - 1));
+  /**
+   * Timing ramps from gentle (wave 1) to quick (wave 5), in seconds:
+   *   warn  how long the red lane shows before the lunge
+   *   dur   how long the lunge itself takes
+   *   gap   breather after a wave clears
+   */
+  private params(): { warn: number; dur: number; gap: number } {
+    const t = Phaser.Math.Clamp(this.waveNo - 1, 0, this.totalWaves - 1) / (this.totalWaves - 1);
+    const lerp = Phaser.Math.Linear;
+    return {
+      warn: lerp(1.9, 1.0, t) - 0.08 * (this.difficulty - 1),
+      dur: lerp(0.65, 0.34, t),
+      gap: lerp(1.4, 0.7, t),
+    };
   }
 
   private startWave(): void {
@@ -89,6 +105,7 @@ export class DodgeScene extends MinigameScene {
   }
 
   private spawnBands(kinds: Kind[]): void {
+    const { warn, dur } = this.params();
     const used: Record<Kind, number> = { h: 0, v: 0 };
     for (const kind of kinds) {
       let pos = kind === 'h' ? this.py : this.px;
@@ -103,7 +120,7 @@ export class DodgeScene extends MinigameScene {
           : this.add.rectangle(pos - THICK / 2, PLAY_TOP, THICK, GAME_H - PLAY_TOP, 0xff3b30, 0.2).setOrigin(0);
       rect.setStrokeStyle(2, 0xff3b30, 0.7).setDepth(3);
       this.tweens.add({ targets: rect, fillAlpha: 0.38, duration: 160, yoyo: true, repeat: -1 });
-      this.bands.push({ kind, pos, rect, t: 0, warn: this.warnTime(), active: false });
+      this.bands.push({ kind, pos, rect, t: 0, warn, dur, active: false });
     }
     this.waiting = false;
   }
@@ -117,10 +134,10 @@ export class DodgeScene extends MinigameScene {
     if (b.kind === 'h') {
       const fromLeft = Math.random() < 0.5;
       streak.setPosition(fromLeft ? -20 : GAME_W + 20, b.pos).setFlipX(!fromLeft);
-      this.tweens.add({ targets: streak, x: fromLeft ? GAME_W + 20 : -20, duration: ACTIVE * 1000 });
+      this.tweens.add({ targets: streak, x: fromLeft ? GAME_W + 20 : -20, duration: b.dur * 1000 });
     } else {
       streak.setPosition(b.pos, PLAY_TOP - 20).setAngle(90);
-      this.tweens.add({ targets: streak, y: GAME_H + 20, duration: ACTIVE * 1000 });
+      this.tweens.add({ targets: streak, y: GAME_H + 20, duration: b.dur * 1000 });
     }
     b.streak = streak;
   }
@@ -145,7 +162,7 @@ export class DodgeScene extends MinigameScene {
           this.lose('The tiger caught you!');
           return;
         }
-        if (b.t >= ACTIVE) {
+        if (b.t >= b.dur) {
           b.rect.destroy();
           b.streak?.destroy();
           this.bands = this.bands.filter((x) => x !== b);
@@ -155,7 +172,7 @@ export class DodgeScene extends MinigameScene {
 
     if (this.bands.length === 0 && !this.waiting && !this.throwOpen) {
       this.waiting = true;
-      this.time.delayedCall(650, () => this.afterWave());
+      this.time.delayedCall(this.params().gap * 1000, () => this.afterWave());
     }
 
     if (this.throwOpen) this.tickThrow(dt);

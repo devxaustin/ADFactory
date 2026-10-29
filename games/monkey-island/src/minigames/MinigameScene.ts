@@ -7,10 +7,10 @@ const TEXT = { fontFamily: 'monospace', color: '#ffffff' };
 /**
  * Base class for every minigame. A subclass supplies the arena (build), what
  * happens when play starts (begin) and the per-frame logic (tick). The base
- * handles input helpers, the title/countdown intro and reporting win or lose.
+ * handles input helpers, the press-to-start intro and reporting win or lose.
  *
  *   build()  -> draw the arena
- *   intro    -> title, hint, 3-2-1-GO (no input counts yet)
+ *   intro    -> title + instructions, waits for E / Space, then 3-2-1-GO
  *   begin()  -> start spawning things
  *   tick(dt) -> runs every frame while `running`
  *   win()/lose() -> show the result and hand control back to the world
@@ -35,6 +35,8 @@ export abstract class MinigameScene extends Phaser.Scene {
     this.onDone = data.onDone;
     this.running = false;
     this.finished = false;
+    this.stage = 'intro';
+    this.introUi = [];
   }
 
   create(): void {
@@ -51,10 +53,13 @@ export abstract class MinigameScene extends Phaser.Scene {
   update(_time: number, delta: number): void {
     // Read action keys every frame so a stale press never leaks into play.
     this.pressed = this.actionKeys.map((k) => Phaser.Input.Keyboard.JustDown(k)).some(Boolean);
+    if (this.stage === 'wait' && this.pressed) this.startCountdown();
     if (this.running && !this.finished) this.tick(delta / 1000);
   }
 
   private pressed = false;
+  private stage: 'intro' | 'wait' | 'count' | 'play' = 'intro';
+  private introUi: Phaser.GameObjects.GameObject[] = [];
 
   /** True on the frame E or Space went down. */
   protected actionPressed(): boolean {
@@ -70,32 +75,52 @@ export abstract class MinigameScene extends Phaser.Scene {
     return v.lengthSq() > 0 ? v.normalize() : v;
   }
 
+  /** Title + instructions stay up until the player presses E or Space. */
   private playIntro(): void {
-    const dim = this.add.rectangle(0, 0, GAME_W, GAME_H, 0x000000, 0.55).setOrigin(0).setDepth(1000);
+    const dim = this.add.rectangle(0, 0, GAME_W, GAME_H, 0x000000, 0.62).setOrigin(0).setDepth(1000);
     const title = this.add
-      .text(GAME_W / 2, 100, this.title, { ...TEXT, fontSize: '20px', fontStyle: 'bold' })
+      .text(GAME_W / 2, 52, this.title, { ...TEXT, fontSize: '20px', fontStyle: 'bold' })
       .setOrigin(0.5)
       .setStroke('#000000', 5)
       .setDepth(1001);
     const hint = this.add
-      .text(GAME_W / 2, 132, this.hint, { ...TEXT, fontSize: '10px', align: 'center', wordWrap: { width: 380 } })
-      .setOrigin(0.5)
+      .text(GAME_W / 2, 84, this.hint, { ...TEXT, fontSize: '10px', align: 'center', wordWrap: { width: 420 }, lineSpacing: 3 })
+      .setOrigin(0.5, 0)
       .setStroke('#000000', 3)
       .setDepth(1001);
-    const count = this.add.text(GAME_W / 2, 185, '', { ...TEXT, fontSize: '26px', fontStyle: 'bold' }).setOrigin(0.5).setStroke('#000000', 5).setDepth(1001);
+    const start = this.add
+      .text(GAME_W / 2, 242, 'Press E or Space to start', { ...TEXT, fontSize: '12px', color: '#f2e6b8' })
+      .setOrigin(0.5)
+      .setStroke('#000000', 4)
+      .setDepth(1001)
+      .setAlpha(0);
+    this.tweens.add({ targets: start, alpha: 1, duration: 500, delay: 400, yoyo: true, hold: 300, repeat: -1 });
+    this.introUi = [dim, title, hint, start];
+    // Brief lockout so the key press that closed the last dialogue can't start the game.
+    this.time.delayedCall(500, () => {
+      if (this.stage === 'intro') this.stage = 'wait';
+    });
+  }
 
+  private startCountdown(): void {
+    this.stage = 'count';
+    const [dim, title, hint, start] = this.introUi as Phaser.GameObjects.GameObject[];
+    this.tweens.killTweensOf(start);
+    hint.destroy();
+    start.destroy();
+    title.destroy();
+    const count = this.add.text(GAME_W / 2, GAME_H / 2, '', { ...TEXT, fontSize: '30px', fontStyle: 'bold' }).setOrigin(0.5).setStroke('#000000', 5).setDepth(1001);
     const steps = ['3', '2', '1', 'GO!'];
     steps.forEach((label, i) => {
-      this.time.delayedCall(1800 + i * 600, () => {
+      this.time.delayedCall(i * 600, () => {
         count.setText(label).setScale(1.4);
         this.tweens.add({ targets: count, scale: 1, duration: 300 });
       });
     });
-    this.time.delayedCall(1800 + steps.length * 600, () => {
+    this.time.delayedCall(steps.length * 600, () => {
       dim.destroy();
-      title.destroy();
-      hint.destroy();
       count.destroy();
+      this.stage = 'play';
       this.running = true;
       this.begin();
     });

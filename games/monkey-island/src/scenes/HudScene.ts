@@ -29,6 +29,8 @@ export class HudScene extends Phaser.Scene {
 
   /** True while the dialogue box is on screen. Gameplay should pause. */
   isDialogueOpen = false;
+  /** performance.now() of the last time a dialogue closed (used to stop E-mash reopening it). */
+  lastClosedAt = 0;
 
   constructor() {
     super('Hud');
@@ -182,6 +184,7 @@ export class HudScene extends Phaser.Scene {
     } else {
       this.box.setVisible(false);
       this.isDialogueOpen = false;
+      this.lastClosedAt = performance.now();
       const cb = this.onDone;
       this.onDone = undefined;
       cb?.();
