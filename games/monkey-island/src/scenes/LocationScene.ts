@@ -1,7 +1,8 @@
 import Phaser from 'phaser';
 import { CHOPS_PER_TREE, GAME_H, GAME_W, INTERACT_RANGE, PLAYER_SPEED, WOOD_NEEDED } from '../config';
 import { ITEMS } from '../data/items';
-import { LOCATIONS, type Exit, type Interactable, type LocationDef, type LocationId, type Side } from '../data/locations';
+import { LOCATIONS, type Exit, type Interactable, type LocationDef, type LocationId, type Side, type Trade } from '../data/locations';
+import { MINIGAME_KEYS, MINIGAME_TITLES, type MinigameData } from '../minigames/types';
 import { GameState } from '../systems/GameState';
 import type { HudScene } from './HudScene';
 
@@ -9,6 +10,8 @@ interface SceneData {
   id: LocationId;
   /** Which edge of this scene the player walks in from. */
   arriveFrom?: Side;
+  /** Set after dying: shows a wake-up line. */
+  respawn?: boolean;
 }
 
 interface Spawned {
@@ -43,6 +46,9 @@ export class LocationScene extends Phaser.Scene {
   private prompt!: Phaser.GameObjects.Text;
   private nearby?: Spawned;
   private leaving = false;
+  private frozen = false;
+  private unlockAt = 0;
+  private respawn = false;
 
   constructor() {
     super('Location');
@@ -51,6 +57,9 @@ export class LocationScene extends Phaser.Scene {
   init(data: SceneData): void {
     this.def = LOCATIONS[data.id];
     this.arriveFrom = data.arriveFrom;
+    this.respawn = data.respawn ?? false;
+    this.frozen = false;
+    this.unlockAt = 0;
     this.spawned = [];
     this.gates = [];
     this.nearby = undefined;
@@ -82,6 +91,11 @@ export class LocationScene extends Phaser.Scene {
 
     this.cameras.main.fadeIn(250, 0, 0, 0);
     this.hud.banner(this.def.name);
+    if (this.respawn) {
+      this.time.delayedCall(600, () =>
+        this.hud.showDialogue(['You wake up on the beach, aching but alive.', 'Your items are still with you. Try again, more carefully.']),
+      );
+    }
   }
 
   // ---------- setup ----------
@@ -175,6 +189,15 @@ export class LocationScene extends Phaser.Scene {
     if (this.leaving) return;
     const body = this.player.body!;
 
+    // Read the interact keys every frame so a stale press never fires later.
+    const pressed = this.interactKeys.map((k) => Phaser.Input.Keyboard.JustDown(k)).some(Boolean);
+
+    if (this.frozen || this.time.now < this.unlockAt) {
+      this.player.setVelocity(0, 0);
+      this.prompt.setVisible(false);
+      return;
+    }
+
     if (this.hud.isDialogueOpen) {
       this.player.setVelocity(0, 0);
     } else {
@@ -185,7 +208,7 @@ export class LocationScene extends Phaser.Scene {
     this.shadow.setPosition(body.center.x, body.bottom + 1).setDepth(body.bottom - 1);
     this.updateNearby();
 
-    if (!this.hud.isDialogueOpen && this.nearby && this.interactKeys.some((k) => Phaser.Input.Keyboard.JustDown(k))) {
+    if (!this.hud.isDialogueOpen && this.nearby && pressed) {
       this.interact(this.nearby);
     }
   }
@@ -283,12 +306,56 @@ export class LocationScene extends Phaser.Scene {
     if (GameState.hasFlag(trade.flag)) return this.hud.showDialogue(trade.afterLines, def.label);
     if (!GameState.has(trade.wants)) return this.hud.showDialogue(def.lines, def.label);
 
+    const mg = trade.minigame;
+    if (!mg) return this.completeTrade(def, trade);
+
+    const first = GameState.bump(`attempts:${trade.flag}`) === 1;
+    this.hud.showDialogue(first ? mg.intro : [mg.retry], def.label, () => this.runMinigame(def, trade));
+  }
+
+  private completeTrade(def: Interactable, trade: Trade): void {
     GameState.remove(trade.wants);
     if (trade.gives) GameState.add(trade.gives);
     GameState.setFlag(trade.flag);
     const lines = trade.gives ? [...trade.lines, `Got: ${ITEMS[trade.gives].name}.`] : trade.lines;
     this.hud.showDialogue(lines, def.label);
     this.refreshWorld();
+  }
+
+  private runMinigame(def: Interactable, trade: Trade): void {
+    const mg = trade.minigame!;
+    this.frozen = true;
+    this.hud.setMinigame(MINIGAME_TITLES[mg.id]);
+    const data: MinigameData = {
+      difficulty: mg.difficulty,
+      onDone: (won) => {
+        this.hud.setMinigame();
+        this.frozen = false;
+        this.unlockAt = this.time.now + 350;
+        if (won) this.completeTrade(def, trade);
+        else this.failEncounter(def, trade);
+      },
+    };
+    this.scene.launch(MINIGAME_KEYS[mg.id], data);
+  }
+
+  private failEncounter(def: Interactable, trade: Trade): void {
+    const lines = trade.minigame!.failLines;
+    const hearts = GameState.hurt();
+    if (hearts > 0) {
+      this.hud.showDialogue([...lines, `Hearts left: ${hearts}.`], def.label);
+    } else {
+      this.hud.showDialogue([...lines, 'Everything goes dark...'], def.label, () => this.die());
+    }
+  }
+
+  private die(): void {
+    this.leaving = true;
+    this.cameras.main.fadeOut(800, 0, 0, 0);
+    this.cameras.main.once('camerafadeoutcomplete', () => {
+      GameState.die();
+      this.scene.restart({ id: 'beach', respawn: true } satisfies SceneData);
+    });
   }
 
   /** Apply flag changes to what is already on screen (gates open, NPCs leave). */

@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { WOOD_NEEDED } from '../config';
+import { MAX_HEARTS, WOOD_NEEDED } from '../config';
 import { ITEMS, type ItemId } from '../data/items';
 
 export interface InventorySlot {
@@ -15,6 +15,8 @@ class GameStateStore extends Phaser.Events.EventEmitter {
   inventory: InventorySlot[] = [];
   flags = new Set<string>();
   private counters = new Map<string, number>();
+  hearts = MAX_HEARTS;
+  deaths = 0;
 
   add(id: ItemId, count = 1): void {
     const slot = this.inventory.find((s) => s.id === id);
@@ -49,6 +51,20 @@ class GameStateStore extends Phaser.Events.EventEmitter {
     return this.flags.has(flag);
   }
 
+  /** Lose a heart. Returns how many are left. */
+  hurt(): number {
+    this.hearts = Math.max(0, this.hearts - 1);
+    this.emit('change');
+    return this.hearts;
+  }
+
+  /** Respawn after dying: full hearts, death count goes up. */
+  die(): void {
+    this.deaths++;
+    this.hearts = MAX_HEARTS;
+    this.emit('change');
+  }
+
   /** Increment and return a named counter (e.g. axe swings on a tree). */
   bump(key: string): number {
     const n = (this.counters.get(key) ?? 0) + 1;
@@ -78,6 +94,8 @@ class GameStateStore extends Phaser.Events.EventEmitter {
     this.inventory = [];
     this.flags.clear();
     this.counters.clear();
+    this.hearts = MAX_HEARTS;
+    this.deaths = 0;
     this.emit('change');
   }
 }

@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { GAME_W } from '../config';
+import { GameState } from '../systems/GameState';
 
 const FONT = { fontFamily: 'monospace', color: '#ffffff' };
 
@@ -29,6 +30,11 @@ export class EndScene extends Phaser.Scene {
       })
       .setOrigin(0.5);
 
+    if (GameState.deaths > 0) {
+      this.add
+        .text(GAME_W / 2, 168, `Deaths: ${GameState.deaths}`, { ...FONT, fontSize: '9px', color: '#e0334c' })
+        .setOrigin(0.5);
+    }
     const again = this.add.text(GAME_W / 2, 200, 'Press E or Space to play again', { ...FONT, fontSize: '11px' }).setOrigin(0.5);
     this.tweens.add({ targets: again, alpha: 0.3, duration: 650, yoyo: true, repeat: -1 });
 

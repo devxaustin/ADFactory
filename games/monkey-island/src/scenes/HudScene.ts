@@ -1,8 +1,9 @@
 import Phaser from 'phaser';
-import { GAME_H, GAME_W, HUD_SLOTS } from '../config';
+import { GAME_H, GAME_W, HUD_SLOTS, MAX_HEARTS } from '../config';
 import { ITEMS } from '../data/items';
 import { GameState } from '../systems/GameState';
 
+const HEART = ['.XX.XX.', 'XXXXXXX', 'XXXXXXX', '.XXXXX.', '..XXX..', '...X...'];
 const FONT = { fontFamily: 'monospace', fontSize: '10px', color: '#ffffff' };
 
 /** Always-on overlay: objective, inventory, dialogue box, location banner. */
@@ -11,6 +12,8 @@ export class HudScene extends Phaser.Scene {
   private pendingBanner?: string;
   private objectiveText!: Phaser.GameObjects.Text;
   private slotLayer!: Phaser.GameObjects.Container;
+  private heartGfx!: Phaser.GameObjects.Graphics;
+  private minigameTitle?: string;
   private bannerText!: Phaser.GameObjects.Text;
 
   private box!: Phaser.GameObjects.Container;
@@ -38,6 +41,7 @@ export class HudScene extends Phaser.Scene {
     this.typing = undefined;
     this.onDone = undefined;
     this.lines = [];
+    this.minigameTitle = undefined;
   }
 
   create(): void {
@@ -52,6 +56,7 @@ export class HudScene extends Phaser.Scene {
     this.add.rectangle(0, 0, GAME_W, 16, 0x000000, 0.55).setOrigin(0);
     this.objectiveText = this.add.text(6, 2, '', FONT);
     this.slotLayer = this.add.container(0, 0);
+    this.heartGfx = this.add.graphics();
 
     this.bannerText = this.add
       .text(GAME_W / 2, 70, '', { ...FONT, fontSize: '20px' })
@@ -83,7 +88,9 @@ export class HudScene extends Phaser.Scene {
   }
 
   private redraw(): void {
-    this.objectiveText.setText(`> ${GameState.objective}`);
+    this.objectiveText.setText(this.minigameTitle ?? `> ${GameState.objective}`);
+    this.slotLayer.setVisible(!this.minigameTitle);
+    this.drawHearts();
     this.slotLayer.removeAll(true);
     const y = 20;
     for (let i = 0; i < HUD_SLOTS; i++) {
@@ -98,6 +105,26 @@ export class HudScene extends Phaser.Scene {
         );
       }
     }
+  }
+
+  private drawHearts(): void {
+    const g = this.heartGfx;
+    g.clear();
+    for (let i = 0; i < MAX_HEARTS; i++) {
+      const x = GAME_W - 8 - (MAX_HEARTS - i) * 18;
+      g.fillStyle(i < GameState.hearts ? 0xe0334c : 0x4a3a40);
+      HEART.forEach((row, ry) =>
+        [...row].forEach((c, rx) => {
+          if (c === 'X') g.fillRect(x + rx * 2, 2 + ry * 2, 2, 2);
+        }),
+      );
+    }
+  }
+
+  /** Minigames call this so the bar shows their title and the inventory hides. */
+  setMinigame(title?: string): void {
+    this.minigameTitle = title;
+    this.redraw();
   }
 
   banner(name: string): void {

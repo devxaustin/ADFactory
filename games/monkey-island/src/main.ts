@@ -6,6 +6,8 @@ import { HudScene } from './scenes/HudScene';
 import { TitleScene } from './scenes/TitleScene';
 import { EndScene } from './scenes/EndScene';
 import { GameState } from './systems/GameState';
+import { DodgeScene } from './minigames/DodgeScene';
+import { CatchScene } from './minigames/CatchScene';
 
 const game = new Phaser.Game({
   type: Phaser.AUTO,
@@ -19,7 +21,7 @@ const game = new Phaser.Game({
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
-  scene: [BootScene, TitleScene, LocationScene, HudScene, EndScene],
+  scene: [BootScene, TitleScene, LocationScene, HudScene, EndScene, DodgeScene, CatchScene],
 });
 
 // Add ?debug to the URL to poke at the game from the browser console.

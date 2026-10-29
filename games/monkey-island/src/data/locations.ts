@@ -1,3 +1,4 @@
+import type { MinigameId } from '../minigames/types';
 import type { ItemId } from './items';
 
 export type LocationId = 'beach' | 'jungle' | 'village' | 'volcano' | 'dock';
@@ -20,6 +21,19 @@ export interface Obstacle {
   removedByFlag?: string;
 }
 
+/** A challenge the player must beat before the trade goes through. */
+export interface MinigameSpec {
+  id: MinigameId;
+  /** 1 = easy ... 3 = hard. */
+  difficulty: number;
+  /** Shown the first time. */
+  intro: string[];
+  /** Shown on later attempts. */
+  retry: string;
+  /** Shown after a failed attempt (a heart is lost). */
+  failLines: string[];
+}
+
 /** Hand over `wants`, get `gives` (optional), and set `flag`. */
 export interface Trade {
   wants: ItemId;
@@ -29,6 +43,8 @@ export interface Trade {
   lines: string[];
   /** Shown on later visits. */
   afterLines: string[];
+  /** If set, the player must win this minigame first. */
+  minigame?: MinigameSpec;
 }
 
 export interface Interactable {
@@ -135,6 +151,16 @@ export const LOCATIONS: Record<LocationId, LocationDef> = {
         trade: {
           wants: 'cheesesteak',
           flag: 'tiger_fed',
+          minigame: {
+            id: 'dodge',
+            difficulty: 1,
+            intro: [
+              'The tiger smells the cheesesteak and lunges!',
+              'Dodge its claws, and when it tires, toss the cheesesteak.',
+            ],
+            retry: 'The tiger is still hungry and angry. Try again!',
+            failLines: ['The tiger\'s claws rake across you. Ouch!'],
+          },
           lines: [
             'The tiger sniffs the cheesesteak, then swallows it in one bite.',
             'Purring, it slinks off into the trees. The path is clear.',
@@ -227,6 +253,16 @@ export const LOCATIONS: Record<LocationId, LocationDef> = {
           wants: 'bananas',
           gives: 'sail',
           flag: 'monkeys_fed',
+          minigame: {
+            id: 'catch',
+            difficulty: 1,
+            intro: [
+              'The Monkey King will not take a gift without a show of skill.',
+              'The monkeys toss bananas and coconuts. Catch the bananas, dodge the coconuts!',
+            ],
+            retry: 'The monkeys cackle and ready another round.',
+            failLines: ['The monkeys laugh at you and pelt you with coconuts. Ouch!'],
+          },
           lines: [
             'The monkeys erupt in cheers and pass the bananas around.',
             'The Monkey King bows and hands you a sail woven from palm fibre.',
