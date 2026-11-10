@@ -13,9 +13,24 @@ export class BootScene extends Phaser.Scene {
     super('Boot');
   }
 
+  preload(): void {
+    // Player sheet: 3 columns (idle, step, step) x 4 rows (down, left, right, up), 16x24 frames.
+    this.load.spritesheet('player', 'sprites/player.png', { frameWidth: 16, frameHeight: 24 });
+  }
+
   create(): void {
     this.makeTextures();
+    this.makePlayerAnims();
     this.scene.start('Title');
+  }
+
+  private makePlayerAnims(): void {
+    const rows = { down: 0, left: 1, right: 2, up: 3 };
+    for (const [dir, row] of Object.entries(rows)) {
+      const f = (col: number) => ({ key: 'player', frame: row * 3 + col });
+      this.anims.create({ key: `player-walk-${dir}`, frames: [f(1), f(0), f(2), f(0)], frameRate: 8, repeat: -1 });
+      this.anims.create({ key: `player-idle-${dir}`, frames: [f(0)], frameRate: 1 });
+    }
   }
 
   private tex(key: string, w: number, h: number, draw: Draw): void {
@@ -63,13 +78,6 @@ export class BootScene extends Phaser.Scene {
       g.fillStyle(0x4a8fd6).fillRect(1, 4, 6, 1).fillRect(9, 11, 6, 1);
     });
 
-    this.tex('player', 12, 16, (g) => {
-      g.fillStyle(0x5a3b20).fillRect(3, 0, 6, 2);
-      g.fillStyle(0xf0c9a0).fillRect(3, 2, 6, 5);
-      g.fillStyle(0x222222).fillRect(4, 4, 1, 1).fillRect(7, 4, 1, 1);
-      g.fillStyle(0x3a7bd5).fillRect(2, 7, 8, 6);
-      g.fillStyle(0x2b2b3a).fillRect(3, 13, 2, 3).fillRect(7, 13, 2, 3);
-    });
     // Light-grey so it can be tinted per NPC.
     this.tex('npc', 14, 16, (g) => {
       g.fillStyle(0xdddddd).fillRect(2, 2, 10, 11);

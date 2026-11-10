@@ -1,51 +1,134 @@
 ---
-import '@fontsource-variable/archivo/wdth.css';
+import '@fontsource/vt323';
 import '../styles/global.css';
 
 interface Props {
   title?: string;
   description?: string;
+  /** Which screen the bottom bar highlights when not on the home page */
+  current?: 'about' | 'projects' | 'media' | 'contact';
 }
 
 const {
   title = 'Austin Devereux Jr.',
   description = 'Projects, art, and music from Austin Devereux Jr., arranged by how finished they are.',
+  current,
 } = Astro.props;
 
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+
+// Outline of the screen glass in 0..1 units: edges bow outward a little and the
+// corners are elliptical, like a real tube. Used to clip the glass and to draw the ring around it.
+const glass =
+  'M 0.045 0.014 Q 0.5 -0.010 0.955 0.014 Q 0.9895 0.014 0.9895 0.07 ' +
+  'Q 1.0065 0.5 0.9895 0.93 Q 0.9895 0.986 0.955 0.986 ' +
+  'Q 0.5 1.010 0.045 0.986 Q 0.0105 0.986 0.0105 0.93 ' +
+  'Q -0.0065 0.5 0.0105 0.07 Q 0.0105 0.014 0.045 0.014 Z';
+
+const screens = [
+  { key: 'about', label: 'About' },
+  { key: 'projects', label: 'Projects' },
+  { key: 'media', label: 'Media' },
+  { key: 'contact', label: 'Contact' },
+] as const;
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#1d2023" />
+    <meta name="theme-color" content="#0a28dc" />
     <title>{title}</title>
+    <script is:inline>
+      // Runs before first paint: decide whether to play the power-on animation.
+      (function () {
+        var d = document.documentElement;
+        d.classList.add('js');
+        try {
+          if (
+            !sessionStorage.getItem('adf-booted') &&
+            !matchMedia('(prefers-reduced-motion: reduce)').matches
+          ) {
+            d.classList.add('boot');
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <noscript>
+      <style>
+        .pane[hidden] {
+          display: block;
+          position: static;
+        }
+        body {
+          overflow: auto;
+        }
+      </style>
+    </noscript>
   </head>
-  <body>
-    <a class="skip" href="#main">Skip to content</a>
-    <header class="bar">
-      <div class="page">
-        <a href={base}>Austin Devereux Jr.</a>
-        <nav aria-label="Stations">
-          <a href={`${base}#prototype`}>Prototypes</a>
-          <a href={`${base}#production`}>In production</a>
-          <a href={`${base}#shipped`}>Shipped</a>
-        </nav>
-      </div>
-    </header>
+  <body data-page={current ? 'file' : 'home'}>
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+      <clipPath id="glass-clip" clipPathUnits="objectBoundingBox"><path d={glass}></path></clipPath>
+    </svg>
 
-    <main id="main">
-      <slot />
-    </main>
-
-    <footer class="foot">
-      <div class="page">
-        <span>Austin Devereux Jr.</span>
-        <a href="https://github.com/devxaustin">github.com/devxaustin</a>
+    <!-- Desktop only: the monitor's plastic frame. Hidden on phones. -->
+    <div class="bezel" aria-hidden="true">
+      <div class="ring">
+        <svg viewBox="0 0 1 1" preserveAspectRatio="none">
+          <path class="r3" d={glass}></path>
+          <path class="r2" d={glass}></path>
+          <path class="r1" d={glass}></path>
+        </svg>
       </div>
-    </footer>
+      <div class="chin">
+        <div class="vents"></div>
+        <div class="power"><span>Power</span><i class="led"></i></div>
+      </div>
+    </div>
+
+    <div class="monitor" id="monitor">
+      <header class="hud">
+        <button class="btn sm" type="button" data-fullscreen hidden>Full screen</button>
+      </header>
+
+      <main id="main">
+        <slot />
+      </main>
+
+      <nav class="osd" aria-label="Screens">
+        <a class="btn" href={`${base}#menu`} data-nav="menu"><i class="tri left"></i> Menu</a>
+        <div class="osd-tabs">
+          {
+            screens.map((s) => (
+              <a
+                class="btn sm"
+                href={`${base}#${s.key}`}
+                data-nav={s.key}
+                aria-current={current === s.key ? 'page' : undefined}
+              >
+                {s.label}
+              </a>
+            ))
+          }
+        </div>
+      </nav>
+    </div>
+
+    <!-- The CRT layer. Purely visual: never takes clicks, hidden from screen readers. -->
+    <div class="crt" aria-hidden="true">
+      <canvas class="crt-static" id="crt-static"></canvas>
+      <div class="crt-glare"></div>
+      <div class="crt-grid"></div>
+      <div class="crt-triad"></div>
+      <div class="crt-roll"></div>
+      <div class="crt-flick"></div>
+      <div class="crt-vig"></div>
+    </div>
+
+    <script>
+      import '../scripts/crt.ts';
+    </script>
   </body>
 </html>

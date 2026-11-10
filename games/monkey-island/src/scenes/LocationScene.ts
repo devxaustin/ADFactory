@@ -39,6 +39,7 @@ export class LocationScene extends Phaser.Scene {
   private def!: LocationDef;
   private arriveFrom?: Side;
   private player!: Phaser.Physics.Arcade.Sprite;
+  private facing: 'up' | 'down' | 'left' | 'right' = 'down';
   private shadow!: Phaser.GameObjects.Image;
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   private wasd!: Record<'W' | 'A' | 'S' | 'D', Phaser.Input.Keyboard.Key>;
@@ -117,7 +118,8 @@ export class LocationScene extends Phaser.Scene {
     this.player = this.physics.add.sprite(x, y, 'player');
     this.player.setCollideWorldBounds(true);
     // Collide with the feet only so walking behind things looks right.
-    this.player.body!.setSize(8, 6).setOffset(2, 10);
+    this.player.body!.setSize(8, 6).setOffset(4, 18);
+    this.player.play('player-idle-down');
     this.shadow = this.add.image(0, 0, 'shadow');
   }
 
@@ -207,7 +209,9 @@ export class LocationScene extends Phaser.Scene {
       this.checkExits();
     }
     this.player.setDepth(body.bottom);
-    this.shadow.setPosition(body.center.x, body.bottom + 1).setDepth(body.bottom - 1);
+    // Feet sit ~1-2px above the frame bottom, and side-facing frames sit ~1px off-centre.
+    const shadowDx = this.facing === 'left' ? -1 : this.facing === 'right' ? 1 : 0;
+    this.shadow.setPosition(body.center.x + shadowDx, body.bottom - 1).setDepth(body.bottom - 1);
     this.updateNearby();
 
     if (!this.hud.isDialogueOpen && performance.now() - this.hud.lastClosedAt > REOPEN_COOLDOWN_MS && this.nearby && pressed) {
@@ -223,7 +227,10 @@ export class LocationScene extends Phaser.Scene {
     const v = new Phaser.Math.Vector2((right ? 1 : 0) - (left ? 1 : 0), (down ? 1 : 0) - (up ? 1 : 0));
     if (v.lengthSq() > 0) v.normalize().scale(PLAYER_SPEED);
     this.player.setVelocity(v.x, v.y);
-    if (v.x !== 0) this.player.setFlipX(v.x < 0);
+    if (v.x !== 0) this.facing = v.x < 0 ? 'left' : 'right';
+    else if (v.y !== 0) this.facing = v.y < 0 ? 'up' : 'down';
+    const moving = v.lengthSq() > 0;
+    this.player.play(`player-${moving ? 'walk' : 'idle'}-${this.facing}`, true);
   }
 
   private checkExits(): void {

@@ -1,0 +1,83 @@
+---
+// One product on the line, shown as a carousel slide. The same component renders at three
+// levels of finish: sketched (prototype), under construction (production), lit solid (shipped).
+interface Props {
+  id: string;
+  title: string;
+  summary: string;
+  stage: 'prototype' | 'production' | 'shipped';
+  type: string;
+  year: number;
+  serial: number;
+  progress?: number;
+  tags?: string[];
+  links?: { label: string; href: string }[];
+  image?: string;
+}
+
+const {
+  id,
+  title,
+  summary,
+  stage,
+  type,
+  year,
+  serial,
+  progress = 0,
+  tags = [],
+  links = [],
+  image,
+} = Astro.props;
+
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const href = `${base}projects/${id}/`;
+const stageName = { prototype: 'Prototype', production: 'In production', shipped: 'Shipped' }[stage];
+const SEGMENTS = 10;
+const filled = Math.round((progress / 100) * SEGMENTS);
+---
+
+<li class="slide">
+  <article class="card" data-stage={stage}>
+    <div class="plate">
+      <span>No. {String(serial).padStart(3, '0')}</span>
+      <span>{type}, {year}</span>
+    </div>
+
+    <span class="stage">{stageName}</span>
+    <h3>{title}</h3>
+    {image && <img class="cover" src={`${base}${image.replace(/^\//, '')}`} alt="" />}
+    <p class="summary">{summary}</p>
+
+    {
+      stage === 'production' && (
+        <div class="meter" role="img" aria-label={`${progress} percent complete`}>
+          {Array.from({ length: SEGMENTS }, (_, i) => (
+            <span class:list={['seg', { on: i < filled }]} />
+          ))}
+          <span class="pct">{progress}%</span>
+        </div>
+      )
+    }
+
+    {
+      tags.length > 0 && (
+        <ul class="tags">
+          {tags.map((t) => (
+            <li>{t}</li>
+          ))}
+        </ul>
+      )
+    }
+
+    <div class="actions">
+      {
+        links.map((l) => (
+          <a class="btn" href={l.href} target="_blank" rel="noopener noreferrer">
+            {l.label}
+          </a>
+        ))
+      }
+      <a class="btn" href={href}>Open file</a>
+    </div>
+  </article>
+</li>

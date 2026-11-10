@@ -1,0 +1,20 @@
+---
+// A framed viewport for one 3D object. Desktop only, fills the side of a text screen.
+// `file` is an optional .glb under /public/models. Without it (or if it fails) a stand-in is drawn.
+interface Props {
+  kind: string;
+  label: string;
+  tag: string;
+  file?: string;
+}
+const { kind, label, tag, file } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const src = file ? `${base}models/${file}` : undefined;
+---
+
+<figure class="model-stage" data-kind={kind} data-model={src} aria-label={`3D model: ${label}. Drag to rotate.`}>
+  <canvas></canvas>
+  <figcaption class="ms-label"><b>{tag}</b><span>{label}</span></figcaption>
+  <span class="ms-hint">Drag to rotate</span>
+  <span class="ms-nogl">3D unavailable on this device</span>
+</figure>

@@ -4,7 +4,9 @@ import Base from '../../layouts/Base.astro';
 
 export async function getStaticPaths() {
   const projects = await getCollection('projects');
-  return projects.filter((p) => !p.data.hidden).map((entry) => ({ params: { id: entry.id }, props: { entry } }));
+  return projects
+    .filter((p) => !p.data.hidden)
+    .map((entry) => ({ params: { id: entry.id }, props: { entry } }));
 }
 
 const { entry } = Astro.props;
@@ -14,12 +16,12 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 const stageName = { prototype: 'Prototype', production: 'In production', shipped: 'Shipped' }[d.stage];
 ---
 
-<Base title={`${d.title} | Austin Devereux Jr.`} description={d.summary}>
-  <article class="page work" data-stage={d.stage}>
-    <p class="back"><a href={`${base}#${d.stage}`}>Back to {stageName.toLowerCase()}</a></p>
+<Base title={`${d.title} | Austin Devereux Jr.`} description={d.summary} current="projects">
+  <article class="doc" data-stage={d.stage}>
+    <p class="prompt">&gt; <a href={`${base}#projects`}>BACK TO PROJECTS</a></p>
 
     <h1>{d.title}</h1>
-    <p class="meta label">{stageName}, {d.type}, {d.year}</p>
+    <span class="stage meta">{stageName}, {d.type}, {d.year}</span>
     <p class="summary">{d.summary}</p>
 
     {d.image && <img class="cover" src={`${base}${d.image.replace(/^\//, '')}`} alt="" />}
@@ -31,7 +33,9 @@ const stageName = { prototype: 'Prototype', production: 'In production', shipped
         <ul class="links">
           {d.links.map((l) => (
             <li>
-              <a href={l.href}>{l.label}</a>
+              <a class="btn" href={l.href} target="_blank" rel="noopener noreferrer">
+                {l.label}
+              </a>
             </li>
           ))}
         </ul>
@@ -39,74 +43,3 @@ const stageName = { prototype: 'Prototype', production: 'In production', shipped
     }
   </article>
 </Base>
-
-<style>
-  .work {
-    padding-block: clamp(2rem, 5vw, 4rem);
-  }
-  .back {
-    margin-bottom: 2rem;
-    font-size: var(--step--1);
-  }
-  h1 {
-    font-size: clamp(2.4rem, 7vw, 5.5rem);
-    max-width: 16ch;
-    text-wrap: balance;
-  }
-  .meta {
-    display: inline-block;
-    margin-top: 1.25rem;
-    padding: 0.25rem 0.7rem;
-    border: var(--line-thin) solid var(--steel);
-    background: var(--hazard);
-  }
-  .work[data-stage='prototype'] .meta {
-    background: var(--slab);
-    border-style: dashed;
-    border-color: var(--blueprint);
-    color: var(--blueprint);
-  }
-  .work[data-stage='shipped'] .meta {
-    background: var(--steel);
-    color: var(--hazard);
-  }
-  .summary {
-    margin-top: 1.5rem;
-    max-width: var(--measure);
-    font-size: var(--step-1);
-    line-height: 1.4;
-  }
-  .cover {
-    margin-top: 2.5rem;
-    width: 100%;
-    border: var(--line) solid var(--steel);
-  }
-  .body {
-    margin-top: 2.5rem;
-    max-width: var(--measure);
-  }
-  .body :global(p + p) {
-    margin-top: 1rem;
-  }
-  .links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    margin: 2.5rem 0 0;
-    padding: 0;
-    list-style: none;
-  }
-  .links a {
-    display: inline-block;
-    padding: 0.6rem 1.1rem;
-    border: var(--line) solid var(--steel);
-    background: var(--steel);
-    color: var(--slab);
-    font-weight: 800;
-    text-decoration: none;
-  }
-  .links a:hover {
-    background: var(--hazard);
-    color: var(--steel);
-  }
-</style>

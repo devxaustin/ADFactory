@@ -1,34 +1,59 @@
-/* Design tokens. Change the look of the whole site from this one file. */
+/* Design tokens. Change the look of the whole site from this one file.
+   The look: an old CRT's built-in menu. Deep blue field, white text. */
 :root {
-  /* Color: concrete floor, steel machinery, hazard paint, blueprint ink */
-  --concrete: #bdbcb6;
-  --slab: #d8d7d2;
-  --steel: #1d2023;
-  --hazard: #f2c200;
-  --blueprint: #2340f0;
+  /* Ink: space-separated RGB so it can take any alpha */
+  --ph-rgb: 236 241 255;
+  --ph: rgb(var(--ph-rgb));
+  --ph-dim: rgb(var(--ph-rgb) / 0.72);
+  --ph-faint: rgb(var(--ph-rgb) / 0.24);
 
-  /* Type: one family, three widths. Expanded for titles, normal for reading,
-     condensed for labels and readouts. */
-  --font: 'Archivo Variable', 'Arial Narrow', Arial, sans-serif;
-  --wdth-display: 125;
-  --wdth-body: 100;
-  --wdth-label: 75;
+  /* The blue field, and the blue used for text on a lit white bar */
+  --blue: #0a28dc;
+  --blue-lit: #1a46ff;
+  --on-ph: #0a22c4;
+  --bg: var(--blue);
 
-  /* Scale (1.25 ratio from 1.0625rem body) */
-  --step--1: 0.875rem;
-  --step-0: 1.0625rem;
-  --step-1: 1.3rem;
-  --step-2: 1.65rem;
-  --step-3: 2.1rem;
-  --step-hero: clamp(2.6rem, 9.2vw, 8.5rem);
+  /* Type: Jersey 15 (bold bitmap, like a TV's built-in menu) for titles and menus, VT323 for reading */
+  --font-body: 'VT323', 'Courier New', monospace;
+  --font-display: 'Jersey 15', 'VT323', monospace;
 
-  /* Space */
-  --gap: 1.5rem;
-  --gutter: clamp(1rem, 4vw, 3rem);
-  --measure: 62ch;
+  /* Size of one screen "pixel" in CSS px: drives the scanline and pixel grid */
+  --px: 3px;
 
-  /* Construction: hard edges, thick lines, no softness */
-  --line: 4px;
-  --line-thin: 3px;
-  --offset: 8px;
+  /* Layout */
+  --gutter: clamp(1rem, 4vw, 2.5rem);
+  --measure: 52ch;
+
+  /* Glow recipes */
+  --glow-text:
+    0 0 1px rgb(var(--ph-rgb) / 0.9), 0 0 4px rgb(var(--ph-rgb) / 0.45),
+    0 0 12px rgb(var(--ph-rgb) / 0.25);
+  --glow-box: 0 0 6px rgb(var(--ph-rgb) / 0.4), 0 0 18px rgb(var(--ph-rgb) / 0.16);
+
+  /* Monitor frame: none on phones, so the screen gets every pixel.
+     The desktop block below turns it on. */
+  --bz: 0px;
+  --bz-b: 0px;
+  --glass-r: clamp(10px, 3.2vmin, 34px);
+}
+
+/* ============================================================
+   DESKTOP: a large screen with a mouse. Gets the monitor frame,
+   bigger type that scales with the window, and wider layouts.
+   Phones and tablets never match this.
+   ============================================================ */
+@media (min-width: 1000px) and (min-height: 560px) and (pointer: fine) {
+  :root {
+    /* Frame thickness follows the window size. Bottom is a thicker "chin". */
+    --bz: clamp(14px, 3vmin, 56px);
+    --bz-b: clamp(36px, 6.8vmin, 124px);
+    --glass-r: clamp(16px, 3.6vmin, 56px);
+    --gutter: clamp(2rem, 4vw, 6rem);
+    --measure: 58ch;
+  }
+}
+@media (min-width: 1000px) and (min-height: 1200px) and (pointer: fine) {
+  :root {
+    --px: 4px;
+  }
 }

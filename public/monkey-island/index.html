@@ -3,16 +3,28 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Monkey Island</title>
+    <title>Monkey Island</title>
+    <script>
+      if (new URLSearchParams(location.search).get('crt') === '0') document.documentElement.classList.add('no-crt');
+    </script>
     <style>
       html, body { margin: 0; height: 100%; background: #0b1020; overflow: hidden; }
       #game { width: 100vw; height: 100vh; }
       canvas { image-rendering: pixelated; }
     </style>
-    <script type="module" crossorigin src="./assets/index-DNYu30qq.js"></script>
+    <script type="module" crossorigin src="./assets/index-B1B6AuH3.js"></script>
     <link rel="modulepreload" crossorigin href="./assets/phaser-Czz4FBZH.js">
+    <link rel="stylesheet" crossorigin href="./assets/index-DN1Xtajg.css">
   </head>
   <body>
     <div id="game"></div>
+    <div class="crt" aria-hidden="true">
+      <div class="crt-glare"></div>
+      <div class="crt-grid"></div>
+      <div class="crt-triad"></div>
+      <div class="crt-roll"></div>
+      <div class="crt-flick"></div>
+      <div class="crt-vig"></div>
+    </div>
   </body>
 </html>
