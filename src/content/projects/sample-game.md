@@ -5,6 +5,7 @@ stage: production
 type: software
 year: 2025
 progress: 60
+category: games
 tags: [placeholder, game]
 ---
 

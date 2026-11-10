@@ -3,6 +3,7 @@ title: Sample album
 summary: Placeholder for a finished release. Add links so visitors can listen.
 stage: shipped
 type: music
+category: music
 year: 2026
 tags: [placeholder, audio]
 links:

@@ -54,6 +54,20 @@ if (track) {
     { passive: true },
   );
 
+  // A faded neighbour card centres when clicked; only the centred card opens.
+  track.addEventListener(
+    'click',
+    (e) => {
+      const slide = (e.target as HTMLElement).closest<HTMLElement>('.slide');
+      const i = slide ? slides.indexOf(slide) : -1;
+      if (i >= 0 && i !== index) {
+        e.preventDefault();
+        goTo(i);
+      }
+    },
+    true,
+  );
+
   prev?.addEventListener('click', () => goTo(index - 1));
   next?.addEventListener('click', () => goTo(index + 1));
 

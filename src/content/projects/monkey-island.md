@@ -5,10 +5,11 @@ stage: production
 type: software
 year: 2026
 progress: 50
+category: games
 tags: [game, phaser, typescript]
 links:
   - label: Play in browser
-    href: https://devxaustin.github.io/ADFactory/monkey-island/
+    href: /monkey-island/
 ---
 
 Rewrite of a text adventure I wrote for a Java class two years ago. Built with Phaser 3 and TypeScript, with placeholder art for now.

@@ -13,6 +13,11 @@
   --on-ph: #0a22c4;
   --bg: var(--blue);
 
+  /* Accent palette for screens that want colour. Blue stays the base; these sit on top of it. */
+  --c-lime: #b6ff3d;
+  --c-amber: #ffb627;
+  --c-cyan: #5bf0d0;
+
   /* Type: Jersey 15 (bold bitmap, like a TV's built-in menu) for titles and menus, VT323 for reading */
   --font-body: 'VT323', 'Courier New', monospace;
   --font-display: 'Jersey 15', 'VT323', monospace;

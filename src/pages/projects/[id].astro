@@ -13,6 +13,7 @@ const { entry } = Astro.props;
 const { Content } = await render(entry);
 const d = entry.data;
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const link = (h: string) => (h.startsWith('/') ? `${base}${h.slice(1)}` : h);
 const stageName = { prototype: 'Prototype', production: 'In production', shipped: 'Shipped' }[d.stage];
 ---
 
@@ -33,7 +34,7 @@ const stageName = { prototype: 'Prototype', production: 'In production', shipped
         <ul class="links">
           {d.links.map((l) => (
             <li>
-              <a class="btn" href={l.href} target="_blank" rel="noopener noreferrer">
+              <a class="btn" href={link(l.href)} target="_blank" rel="noopener noreferrer">
                 {l.label}
               </a>
             </li>

@@ -1,9 +1,8 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
-import ProjectSlide from '../components/ProjectSlide.astro';
 import ModelStage from '../components/ModelStage.astro';
-import { site, channels, menuModels } from '../data/site';
+import { site, channels, menuModels, projectCategories } from '../data/site';
 
 // The line runs prototype -> production -> shipped, oldest first within each station.
 const stageOrder = { prototype: 0, production: 1, shipped: 2 } as const;
@@ -23,6 +22,23 @@ const menuStage = Object.fromEntries(
   Object.entries(menuModels).map(([k, m]) => [k, { kind: m.kind, file: m.file ? `${base}models/${m.file}` : undefined, rotate: m.rotate, tint: m.tint, textures: m.textures ? `${base}models/${m.textures}` : undefined }]),
 );
 const pad = (n: number) => String(n).padStart(2, '0');
+
+// Projects screen: each category with its projects, and the 3D model each one shows.
+const cats = projectCategories.map((c) => ({ ...c, items: items.filter((p) => p.data.category === c.key) }));
+const projModels = Object.fromEntries(
+  projectCategories.map((c) => [
+    c.key,
+    { kind: c.model.kind, file: c.model.file ? `${base}models/${c.model.file}` : undefined, rotate: c.model.rotate, tint: c.model.tint, textures: c.model.textures ? `${base}models/${c.model.textures}` : undefined, accent: c.accent, sway: c.model.sway },
+  ]),
+);
+const rgb = (h: string) => {
+  const n = parseInt(h.slice(1), 16);
+  return `${n >> 16} ${(n >> 8) & 255} ${n & 255}`;
+};
+const stageName = { prototype: 'Prototype', production: 'In production', shipped: 'Shipped' } as const;
+const stageColor = { prototype: 'var(--c-cyan)', production: 'var(--c-amber)', shipped: 'var(--c-lime)' } as const;
+const first = cats[0];
+const href = (h: string) => (h.startsWith('/') ? `${base}${h.slice(1)}` : h);
 
 const menu = [
   { key: 'about', label: 'About' },
@@ -99,48 +115,134 @@ const menu = [
     </div>
   </section>
 
-  <!-- PROJECTS: left/right carousel -->
-  <section class="pane" data-pane="projects" aria-labelledby="projects-h" hidden>
+  <!-- PROJECTS: categories with a floating 3D model. Opening one slides the model aside and shows its projects. -->
+  <section
+    class="pane pj"
+    data-pane="projects"
+    data-level="browse"
+    data-cat={first?.key}
+    aria-labelledby="projects-h"
+    hidden
+  >
     <header class="pane-head">
       <h2 id="projects-h">Projects</h2>
-      <span class="meta">Prototype to shipped</span>
+      <p class="crumb">
+        <button class="btn sm" type="button" data-proj-back hidden><i class="tri left"></i> Back</button>
+        <span data-crumb>Pick a line</span>
+      </p>
     </header>
 
     {
-      items.length > 0 ? (
-        <>
-          <ul class="track" role="list" aria-label="Projects, swipe or use the arrows">
-            {items.map((entry, i) => (
-              <ProjectSlide
-                id={entry.id}
-                title={entry.data.title}
-                summary={entry.data.summary}
-                stage={entry.data.stage}
-                type={entry.data.type}
-                year={entry.data.year}
-                progress={entry.data.progress}
-                tags={entry.data.tags}
-                links={entry.data.links}
-                image={entry.data.image}
-                serial={i + 1}
-              />
+      cats.length > 0 ? (
+        <div class="proj">
+          <div class="proj-stage" aria-hidden="true" data-models={JSON.stringify(projModels)}>
+            <div class="proj-orb">
+              <i class="rays" />
+              <i class="ring" />
+              <i class="body" />
+              <i class="pulse" />
+            </div>
+            <canvas />
+          </div>
+
+          <ul class="proj-cats" role="list" aria-label="Project categories">
+            <li class="hl" aria-hidden="true" />
+            {cats.map((c, i) => (
+              <li style={`--i:${i}`}>
+                <button
+                  type="button"
+                  class:list={['proj-row', { 'is-sel': i === 0 }]}
+                  data-cat={c.key}
+                  data-label={c.label}
+                  data-accent={c.accent}
+                  data-accent2={c.accent2}
+                  data-on={c.onAccent}
+                  data-bg-a={c.bg[0]}
+                  data-bg-b={c.bg[1]}
+                  data-theme={c.theme}
+                  style={`--chip:${c.accent}`}
+                >
+                  <i class="chip" />
+                  <span class="t">{c.label}</span>
+                  <span class="count">{pad(c.items.length)}</span>
+                </button>
+              </li>
             ))}
           </ul>
-          <div class="deck-controls">
-            <button class="btn arrow" type="button" data-deck-prev aria-label="Previous project">
-              <i class="tri left" />
-            </button>
-            <span class="deck-count" data-deck-count aria-live="polite">
-              01 / {pad(items.length)}
+
+          {cats.map((c) => (
+            <div class="proj-view" data-view={c.key}>
+              {c.items.length > 0 ? (
+                <>
+                  <ul class="proj-glist" role="list" aria-label={`${c.label} projects`}>
+                    <li class="hl" aria-hidden="true" />
+                    {c.items.map((p, i) => (
+                      <li style={`--i:${i}`}>
+                        <button type="button" class:list={['proj-row', { 'is-sel': i === 0 }]} data-game={p.id} style={`--chip:${stageColor[p.data.stage]}`}>
+                          <i class="chip" />
+                          <span class="t">{p.data.title}</span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                  <div class="proj-details" aria-live="polite">
+                    {c.items.map((p, i) => {
+                      const filled = Math.round(((p.data.progress ?? 0) / 100) * 10);
+                      return (
+                        <article class:list={['proj-detail', { 'is-on': i === 0 }]} data-stage={p.data.stage} data-game={p.id}>
+                          <span class="badge">{stageName[p.data.stage]}</span>
+                          <h3>{p.data.title}</h3>
+                          <p class="meta-line">
+                            {p.data.type} / {p.data.year}
+                          </p>
+                          {p.data.image && <img class="cover" src={`${base}${p.data.image.replace(/^\//, '')}`} alt="" />}
+                          <p class="summary">{p.data.summary}</p>
+                          {p.data.stage === 'production' && (
+                            <div class="meter" role="img" aria-label={`${p.data.progress ?? 0} percent complete`}>
+                              {Array.from({ length: 10 }, (_, n) => (
+                                <span class:list={['seg', { on: n < filled }]} style={`--n:${n}`} />
+                              ))}
+                              <span class="pct">{p.data.progress ?? 0}%</span>
+                            </div>
+                          )}
+                          <div class="actions">
+                            {p.data.links[0] && (
+                              <a class="btn primary" href={href(p.data.links[0].href)} target="_blank" rel="noopener noreferrer">
+                                {p.data.links[0].label}
+                              </a>
+                            )}
+                            <a class="btn" href={`${base}projects/${p.id}/`}>
+                              Open file
+                            </a>
+                          </div>
+                        </article>
+                      );
+                    })}
+                  </div>
+                </>
+              ) : (
+                <p class="proj-empty">Nothing here yet.</p>
+              )}
+            </div>
+          ))}
+
+          <p class="legend proj-legend">
+            <span class="k-desk">
+              <span data-when="browse">
+                Select: <i class="tri up" />
+                <i class="tri down" /> key &nbsp; Open: <i class="tri right" /> key &nbsp; End: esc key
+              </span>
+              <span data-when="open">
+                Select: <i class="tri up" />
+                <i class="tri down" /> key &nbsp; Go: enter key &nbsp; Back: <i class="tri left" /> key
+              </span>
             </span>
-            <button class="btn arrow" type="button" data-deck-next aria-label="Next project">
-              <i class="tri right" />
-            </button>
-          </div>
-        </>
+            <span class="k-touch">Tap a line</span>
+          </p>
+        </div>
       ) : (
         <p class="text-screen">
-          Nothing on the line yet. Add a file to <code>src/content/projects</code>.
+          No categories yet. Add one in <code>projectCategories</code> in <code>src/data/site.ts</code>.
         </p>
       )
     }
@@ -243,6 +345,6 @@ const menu = [
   import '../scripts/router.ts';
   import '../scripts/models.ts';
   import '../scripts/menu.ts';
-  import '../scripts/carousel.ts';
+  import '../scripts/projects.ts';
   import '../scripts/tv.ts';
 </script>

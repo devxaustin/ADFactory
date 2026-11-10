@@ -136,6 +136,97 @@ function buildCartridge(): THREE.Group {
   return g;
 }
 
+
+/* ---------- Stand-in: game controller (Projects > Games). Colour cues only, no console logos. ---------- */
+function buildController(): THREE.Group {
+  const g = new THREE.Group();
+  const shell = () => new THREE.MeshStandardMaterial({ color: 0xe9ece8, roughness: 0.42 });
+  const plate = () => new THREE.MeshStandardMaterial({ color: 0x2a2d30, roughness: 0.55 });
+  const body = new THREE.Mesh(new RoundedBoxGeometry(2.3, 1.1, 0.5, 4, 0.2), shell());
+  g.add(body);
+  for (const sx of [-1, 1]) {
+    const grip = new THREE.Mesh(new RoundedBoxGeometry(0.85, 1.55, 0.5, 4, 0.3), shell());
+    grip.position.set(sx * 1.0, -0.62, 0);
+    grip.rotation.z = sx * 0.28;
+    g.add(grip);
+    const bumper = new THREE.Mesh(new RoundedBoxGeometry(0.95, 0.22, 0.34, 3, 0.09), plate());
+    bumper.position.set(sx * 0.85, 0.58, -0.04);
+    g.add(bumper);
+  }
+  const top = new THREE.Mesh(new RoundedBoxGeometry(1.6, 0.72, 0.06, 3, 0.03), plate());
+  top.position.set(0, 0.06, 0.26);
+  g.add(top);
+  // sticks
+  const stick = (x: number, y: number) => {
+    const ring = new THREE.Mesh(new THREE.CylinderGeometry(0.27, 0.3, 0.1, 16), plate());
+    ring.rotation.x = Math.PI / 2;
+    ring.position.set(x, y, 0.3);
+    const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.22, 0.14, 16), mat.dark());
+    cap.rotation.x = Math.PI / 2;
+    cap.position.set(x, y, 0.4);
+    g.add(ring, cap);
+  };
+  stick(-0.78, 0.12);
+  stick(0.38, -0.34);
+  // d-pad
+  const dpadA = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.16, 0.1), mat.dark());
+  const dpadB = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.5, 0.1), mat.dark());
+  dpadA.position.set(-0.38, -0.34, 0.32);
+  dpadB.position.copy(dpadA.position);
+  g.add(dpadA, dpadB);
+  // face buttons, four colours in a diamond (unlabelled)
+  const colours = [0x46d836, 0xd8352a, 0x2f7de1, 0xf2c21a];
+  const spots: [number, number][] = [[0, -0.2], [0.2, 0], [-0.2, 0], [0, 0.2]];
+  spots.forEach(([dx, dy], i) => {
+    const b = new THREE.Mesh(new THREE.CylinderGeometry(0.095, 0.095, 0.1, 12), new THREE.MeshStandardMaterial({ color: colours[i], roughness: 0.35, emissive: colours[i], emissiveIntensity: 0.25 }));
+    b.rotation.x = Math.PI / 2;
+    b.position.set(0.78 + dx, 0.12 + dy, 0.31);
+    g.add(b);
+  });
+  // centre ring (a plain glowing ring)
+  const glow = new THREE.Mesh(new THREE.TorusGeometry(0.15, 0.04, 8, 20), new THREE.MeshStandardMaterial({ color: 0x9dff6a, emissive: 0x46d836, emissiveIntensity: 1.2 }));
+  glow.position.set(0, 0.28, 0.3);
+  g.add(glow);
+  for (const sx of [-1, 1]) {
+    const sm = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.08, 8), mat.dark());
+    sm.rotation.x = Math.PI / 2;
+    sm.position.set(sx * 0.35, 0.02, 0.31);
+    g.add(sm);
+  }
+  g.rotation.x = -0.35;
+  const wrap = new THREE.Group();
+  wrap.add(g);
+  return wrap;
+}
+
+/* ---------- Stand-in: silver music player (Projects > Music) ---------- */
+function buildIpod(): THREE.Group {
+  const g = new THREE.Group();
+  const silver = new THREE.Mesh(new RoundedBoxGeometry(1.5, 2.45, 0.3, 4, 0.14), new THREE.MeshStandardMaterial({ color: 0xd4d8de, metalness: 0.85, roughness: 0.28 }));
+  g.add(silver);
+  const bezel = new THREE.Mesh(new RoundedBoxGeometry(1.22, 0.96, 0.05, 3, 0.04), mat.dark());
+  bezel.position.set(0, 0.62, 0.16);
+  g.add(bezel);
+  const screen = new THREE.Mesh(new THREE.BoxGeometry(1.06, 0.8, 0.04), new THREE.MeshStandardMaterial({ color: 0xcfe6ff, emissive: 0x9cc8ff, emissiveIntensity: 0.7, roughness: 0.2 }));
+  screen.position.set(0, 0.62, 0.19);
+  g.add(screen);
+  for (let i = 0; i < 4; i++) {
+    const line = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.07, 0.02), new THREE.MeshStandardMaterial({ color: i === 1 ? 0x2a6fe0 : 0x6c7f9a }));
+    line.position.set(-0.05, 0.86 - i * 0.18, 0.215);
+    g.add(line);
+  }
+  const wheel = new THREE.Mesh(new THREE.CylinderGeometry(0.52, 0.52, 0.06, 28), new THREE.MeshStandardMaterial({ color: 0xf1f3f6, roughness: 0.35 }));
+  wheel.rotation.x = Math.PI / 2;
+  wheel.position.set(0, -0.58, 0.17);
+  g.add(wheel);
+  const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.08, 20), new THREE.MeshStandardMaterial({ color: 0xc3c8d0, metalness: 0.7, roughness: 0.3 }));
+  hub.rotation.x = Math.PI / 2;
+  hub.position.set(0, -0.58, 0.2);
+  g.add(hub);
+  g.rotation.z = -0.1;
+  return g;
+}
+
 /* ---------- Stand-in: little CRT TV (Media) ---------- */
 function buildTv(): THREE.Group {
   const g = new THREE.Group();
@@ -168,8 +259,8 @@ function buildTv(): THREE.Group {
   return g;
 }
 
-export type Kind = 'phone' | 'gear' | 'cartridge' | 'tv';
-const builders: Record<Kind, () => THREE.Group> = { phone: buildPhone, gear: buildGears, cartridge: buildCartridge, tv: buildTv };
+export type Kind = 'phone' | 'gear' | 'cartridge' | 'tv' | 'controller' | 'ipod';
+const builders: Record<Kind, () => THREE.Group> = { phone: buildPhone, gear: buildGears, cartridge: buildCartridge, tv: buildTv, controller: buildController, ipod: buildIpod };
 
 // Load a .glb or .fbx if one is given, otherwise (or if it fails) build the stand-in. Result is centered and sized.
 type ObjectOpts = { rotate?: [number, number, number]; tint?: string; textures?: string };
@@ -277,7 +368,7 @@ function makeRenderer(canvas: HTMLCanvasElement) {
   const rimB = new THREE.DirectionalLight(0xffffff, 2.2);
   rimB.position.set(3, 1, -5);
   scene.add(rimA, rimB);
-  return { renderer, scene };
+  return { renderer, scene, rimA, rimB };
 }
 
 /* ---------- Stage ---------- */
@@ -366,7 +457,7 @@ const io = new IntersectionObserver((entries) => {
       if (!s) {
         try {
           const el = e.target as HTMLElement;
-          s = el.classList.contains('menu-stage') ? initMenuStage(el) : initStage(el);
+          s = el.classList.contains('menu-stage') ? initMenuStage(el) : el.classList.contains('proj-stage') ? initProjectsStage(el) : initStage(el);
         } catch (err) {
           console.warn('[models] WebGL unavailable', err);
           (e.target as HTMLElement).classList.add('no-gl');
@@ -381,7 +472,7 @@ const io = new IntersectionObserver((entries) => {
     }
   }
 });
-document.querySelectorAll('.model-stage, .menu-stage').forEach((el) => io.observe(el));
+document.querySelectorAll('.model-stage, .menu-stage, .proj-stage').forEach((el) => io.observe(el));
 
 
 /* ---------- Home menu: one object floats on the blue screen, swapped by the highlighted row ---------- */
@@ -393,13 +484,13 @@ function initMenuStage(el: HTMLElement) {
   camera.position.set(0, 0.1, 8);
 
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const holders = new Map<string, { group: THREE.Group; s: number }>();
+  const holders = new Map<string, { group: THREE.Group; s: number; sway: boolean }>();
   for (const [key, c] of Object.entries(config)) {
     const group = new THREE.Group();
     group.scale.setScalar(0.001);
     group.visible = false;
     scene.add(group);
-    holders.set(key, { group, s: 0 });
+    holders.set(key, { group, s: 0, sway: !!c.sway });
     makeObject(c.kind, c.file, (o) => group.add(o), { rotate: c.rotate, tint: c.tint, textures: c.textures });
   }
 
@@ -437,6 +528,156 @@ function initMenuStage(el: HTMLElement) {
       hd.group.scale.setScalar(Math.max(hd.s, 0.001));
       hd.group.rotation.y = t * 0.45;
       hd.group.position.y = Math.sin(t * 1.1) * 0.12;
+      if (!reduce) spinParts(hd.group, dt);
+    }
+    renderer.render(scene, camera);
+  }
+
+  return {
+    start() {
+      if (!raf) {
+        last = performance.now();
+        frame();
+      }
+    },
+    stop() {
+      cancelAnimationFrame(raf);
+      raf = 0;
+    },
+  };
+}
+
+
+/* ---------- Projects screen: the category model glides between "browse" and "open" ----------
+   projects.ts sends `proj:state` ({ level, cat, accent }). Position, size and spin are springs, so the
+   model overshoots and settles. The rim lights take the category's accent colour. */
+function initProjectsStage(el: HTMLElement) {
+  const canvas = el.querySelector<HTMLCanvasElement>('canvas')!;
+  const config: Record<string, { kind: string; file?: string; rotate?: [number, number, number]; tint?: string; textures?: string; accent?: string; sway?: boolean }> = JSON.parse(el.dataset.models ?? '{}');
+  const pane = el.closest<HTMLElement>('.pane')!;
+  const { renderer, scene, rimA, rimB } = makeRenderer(canvas);
+  const FOV = 30;
+  const DIST = 8;
+  const camera = new THREE.PerspectiveCamera(FOV, 1, 0.1, 50);
+  camera.position.set(0, 0.1, DIST);
+
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const holders = new Map<string, { group: THREE.Group; s: number; sway: boolean }>();
+  for (const [key, c] of Object.entries(config)) {
+    const group = new THREE.Group();
+    group.scale.setScalar(0.001);
+    group.visible = false;
+    scene.add(group);
+    holders.set(key, { group, s: 0, sway: !!c.sway });
+    makeObject(c.kind, c.file, (o) => group.add(o), { rotate: c.rotate, tint: c.tint, textures: c.textures });
+  }
+
+  // Where the model sits, as a fraction of half the screen width (-1 is the left edge), and how big.
+  const POSE = {
+    browse: { x: -0.4, y: 0, scale: 1.12 },
+    open: { x: -0.74, y: 0.15, scale: 0.6 },
+  } as const;
+  type Spring = { x: number; v: number };
+  const spring = (x: number): Spring => ({ x, v: 0 });
+  const step = (sp: Spring, target: number, dt: number, k = 62, damp = 9) => {
+    sp.v += (target - sp.x) * k * dt;
+    sp.v -= sp.v * Math.min(damp * dt, 1);
+    sp.x += sp.v * dt;
+  };
+
+  let level: 'browse' | 'open' = (pane.dataset.level as 'browse' | 'open') ?? 'browse';
+  let cat = pane.dataset.cat ?? [...holders.keys()][0];
+  const px = spring(POSE.browse.x);
+  const py = spring(0);
+  const ps = spring(POSE.browse.scale);
+  let spin = 0; // extra spin speed (rad/s) that dies away: a whirl on every change
+  let yaw = 0;
+  let whirl = 0; // flat models spin once or twice on a change, then ease back to facing front
+  let tiltX = 0;
+  let tiltY = 0;
+  let aimX = 0;
+  let aimY = 0;
+  const accent = new THREE.Color(0x9bb8ff);
+  const accentTo = new THREE.Color(0x9bb8ff);
+  const baseB = new THREE.Color(0xffffff);
+
+  document.addEventListener('proj:state', (e) => {
+    const d = (e as CustomEvent).detail as { level: 'browse' | 'open'; cat: string; accent?: string };
+    if (d.level !== level) {
+      spin = reduce ? 0 : 15;
+      whirl = reduce ? 0 : Math.PI * 4;
+    }
+    level = d.level;
+    if (d.cat && d.cat !== cat) {
+      cat = d.cat;
+      spin = Math.max(spin, reduce ? 0 : 7);
+      whirl = reduce ? 0 : Math.PI * 2;
+    }
+    if (d.accent) accentTo.set(d.accent);
+  });
+  // Coming back to the screen: the model pops in again from nothing.
+  document.addEventListener('pane:change', (e) => {
+    if ((e as CustomEvent).detail.name !== 'projects') return;
+    for (const hd of holders.values()) hd.s = 0;
+    px.x = POSE.browse.x - 0.5;
+    px.v = 0;
+    ps.x = 0.2;
+    ps.v = 0;
+    spin = reduce ? 0 : 12;
+    whirl = reduce ? 0 : Math.PI * 4;
+  });
+  pane.addEventListener('pointermove', (e) => {
+    const r = pane.getBoundingClientRect();
+    aimX = ((e.clientX - r.left) / r.width) * 2 - 1;
+    aimY = ((e.clientY - r.top) / r.height) * 2 - 1;
+  });
+
+  let w = 0;
+  let h = 0;
+  let raf = 0;
+  let last = performance.now();
+  let t = 0;
+
+  function frame() {
+    raf = requestAnimationFrame(frame);
+    const cw = el.clientWidth;
+    const ch = el.clientHeight;
+    if (cw && ch && (cw !== w || ch !== h)) {
+      w = cw;
+      h = ch;
+      renderer.setSize(Math.ceil(w / PIXEL), Math.ceil(h / PIXEL), false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    }
+    const now = performance.now();
+    const dt = Math.min((now - last) / 1000, 0.05);
+    last = now;
+    if (!reduce) t += dt;
+
+    const pose = POSE[level];
+    step(px, pose.x, dt);
+    step(py, pose.y, dt);
+    step(ps, pose.scale, dt, 70, 8);
+    spin *= Math.exp(-dt * 1.7);
+    yaw += (reduce ? 0 : 0.45 + spin) * dt;
+    whirl *= Math.exp(-dt * 2.4);
+    // The model leans toward the pointer a little.
+    tiltX += ((reduce ? 0 : aimY * 0.28) - tiltX) * (1 - Math.exp(-dt * 5));
+    tiltY += ((reduce ? 0 : aimX * 0.4) - tiltY) * (1 - Math.exp(-dt * 5));
+    accent.lerp(accentTo, 1 - Math.exp(-dt * 4));
+    rimA.color.copy(accent);
+    rimB.color.copy(baseB).lerp(accent, 0.35);
+
+    const halfH = Math.tan((FOV * Math.PI) / 360) * DIST;
+    const halfW = halfH * camera.aspect;
+
+    for (const [key, hd] of holders) {
+      const target = key === cat ? 1 : 0;
+      hd.s += (target - hd.s) * (1 - Math.exp(-dt * 9));
+      hd.group.visible = hd.s > 0.02;
+      hd.group.scale.setScalar(Math.max(hd.s * ps.x, 0.001));
+      hd.group.position.set(px.x * halfW, py.x * halfH + (reduce ? 0 : Math.sin(t * 1.1) * 0.12), 0);
+      hd.group.rotation.set(tiltX, (hd.sway ? Math.sin(t * 0.8) * 0.7 + whirl : yaw) + tiltY, 0);
       if (!reduce) spinParts(hd.group, dt);
     }
     renderer.render(scene, camera);

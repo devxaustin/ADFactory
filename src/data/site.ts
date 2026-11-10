@@ -1,7 +1,7 @@
 // Everything you'd want to edit on the About, Contact, and Media screens lives here.
 // Projects live in src/content/projects (one markdown file each).
 
-export type ModelKind = 'gear' | 'phone' | 'cartridge' | 'tv';
+export type ModelKind = 'gear' | 'phone' | 'cartridge' | 'tv' | 'controller' | 'ipod';
 
 // Home menu (desktop): the 3D object that floats on the screen while each line is highlighted.
 // Stand-in kinds: gear, phone, cartridge, tv. For your own, drop a .glb in public/models/ and set `file`.
@@ -13,6 +13,41 @@ export const menuModels: Record<'about' | 'projects' | 'media' | 'contact', { ki
   media: { kind: 'tv', file: 'crt.glb', rotate: [0, 0, 180], textures: 'crt' },
   contact: { kind: 'phone', file: 'old-phone-web.glb' },
 };
+
+// Projects screen: one entry per category. A project joins a category with `category: <key>` in its
+// markdown file. `model` works like the home menu models. Colours drive that category's whole look
+// (accent, accent2 and onAccent set the bars, glow and text; bg is the two-stop background field).
+export const projectCategories: {
+  key: string;
+  label: string;
+  accent: string;
+  accent2: string;
+  onAccent: string;
+  bg: [string, string];
+  theme: 'xbox' | 'ipod'; // which look the screen takes on (see "Projects themes" in global.css)
+  model: { kind: ModelKind; file?: string; rotate?: [number, number, number]; tint?: string; textures?: string; sway?: boolean };
+}[] = [
+  {
+    key: 'games',
+    label: 'Games',
+    accent: '#b9d12a', // olive-lime: highlight bar, buttons
+    accent2: '#46d836', // bright green: glow, mesh, outlines
+    onAccent: '#0b2a07', // dark text on the highlight bar
+    bg: ['#04200a', '#0b3a10'], // near-black green field
+    theme: 'xbox',
+    model: { kind: 'controller' }, // procedural stand-in; add `file: 'controller.glb'` to use a real model
+  },
+  {
+    key: 'music',
+    label: 'Music',
+    accent: '#2f7de1', // blue highlight bar
+    accent2: '#9aa3b2', // silver: glow, mesh, outlines
+    onAccent: '#ffffff',
+    bg: ['#f4f6f9', '#d5dae2'], // white to light silver
+    theme: 'ipod',
+    model: { kind: 'ipod', sway: true },
+  },
+];
 
 export const site = {
   name: 'Austin Devereux Jr.',
