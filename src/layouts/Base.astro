@@ -116,6 +116,10 @@ const screens = [
             ))
           }
         </div>
+        <!-- Phones: where you are in About, Projects, Media, Contact. Hidden on desktop. -->
+        <div class="m-dots" aria-hidden="true">
+          {screens.map((s) => <i data-dot={s.key} class:list={{ on: current === s.key }}></i>)}
+        </div>
       </nav>
     </div>
 

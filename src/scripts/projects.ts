@@ -15,11 +15,16 @@ if (pane) {
   const views = Array.from(pane.querySelectorAll<HTMLElement>('.proj-view'));
   const back = pane.querySelector<HTMLButtonElement>('[data-proj-back]');
   const crumb = pane.querySelector<HTMLElement>('[data-crumb]');
+  const pickName = pane.querySelector<HTMLElement>('[data-proj-name]');
+  const pickDots = Array.from(pane.querySelectorAll<HTMLElement>('[data-proj-dot]'));
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  const MOBILE = { matches: true }; // the phone layout is used at every size
+  const PHONE = matchMedia('not all and (min-width: 1000px) and (min-height: 560px) and (pointer: fine)'); // real phones: no hover
 
   let level: 'browse' | 'open' = 'browse';
   let ci = 0; // selected category
   let gi = 0; // selected project in the open category
+  let pick = false; // phones: a project is chosen, so the rest of the list is folded away
 
   const rgb = (hex: string) => {
     const n = parseInt(hex.slice(1), 16);
@@ -61,7 +66,7 @@ if (pane) {
 
   function emit() {
     const d = catRows[ci]?.dataset;
-    document.dispatchEvent(new CustomEvent('proj:state', { detail: { level, cat: d?.cat, accent: d?.accent } }));
+    document.dispatchEvent(new CustomEvent('proj:state', { detail: { level, cat: d?.cat, accent: d?.accent, pick } }));
   }
 
   function selectCat(i: number) {
@@ -74,6 +79,8 @@ if (pane) {
     });
     applyTheme(ci);
     placeRow(catList, catRows[ci]);
+    if (pickName) pickName.textContent = catRows[ci].dataset.label ?? '';
+    pickDots.forEach((d, n) => d.classList.toggle('on', n === ci));
     emit();
   }
 
@@ -100,6 +107,7 @@ if (pane) {
   }
 
   function setLevel(next: 'browse' | 'open', animate: boolean) {
+    setPick(false, false);
     level = next;
     pane!.dataset.level = next;
     document.documentElement.dataset.projLevel = next;
@@ -111,6 +119,8 @@ if (pane) {
       gi = 0;
       details().forEach((d) => d.classList.remove('swap'));
       selectGame(0, false);
+      // Phones: a category with a single project has nothing to choose, so go straight to its details.
+      if (MOBILE.matches && games().length === 1) setPick(true, false);
     }
     if (animate && crt && !reduce.matches) burst(crt, 140);
     // Measure after the layout has changed.
@@ -118,8 +128,24 @@ if (pane) {
     emit();
   }
 
+  // Phones: choosing a project folds the other lines away, so a long list never crowds the details.
+  // Back (button, swipe right, Esc) unfolds the list first, then leaves the category.
+  function setPick(next: boolean, animate = true) {
+    pick = next;
+    if (next) pane!.dataset.pick = '1';
+    else delete pane!.dataset.pick;
+    views.forEach((v) => v.querySelectorAll('.proj-glist > li.away').forEach((li) => li.classList.remove('away')));
+    if (next) games().forEach((r, n) => n !== gi && r.parentElement?.classList.add('away'));
+    if (animate && crt && !reduce.matches) burst(crt, 80);
+    requestAnimationFrame(() => requestAnimationFrame(placeAll));
+    emit();
+  }
+
   const open = () => level === 'browse' && catRows.length && setLevel('open', true);
-  const close = () => level === 'open' && setLevel('browse', true);
+  const close = () => {
+    if (pick && games().length > 1) setPick(false);
+    else if (level === 'open') setLevel('browse', true);
+  };
 
   /* ---- pointer ---- */
   catRows.forEach((r, n) => {
@@ -134,10 +160,49 @@ if (pane) {
     games(vi).forEach((r, n) => {
       r.addEventListener('mouseenter', () => level === 'open' && vi === ci && selectGame(n));
       r.addEventListener('focus', () => level === 'open' && vi === ci && selectGame(n));
-      r.addEventListener('click', () => level === 'open' && vi === ci && selectGame(n));
+      r.addEventListener('click', () => {
+        if (level !== 'open' || vi !== ci) return;
+        selectGame(n);
+        if (MOBILE.matches) setPick(true);
+      });
     });
   });
   back?.addEventListener('click', close);
+  // Phones: the object is the button. Tap it to open its category (the model then moves up for the details).
+  // Desktop carousel: the middle model is the chosen one. Click one beside it to bring it to the middle,
+  // click the middle one to open it.
+  const stage = pane.querySelector<HTMLElement>('.proj-stage');
+  const SIDE_X = 0.32; // matches CAROUSEL_GAP in models.ts: half of 0.64
+  function modelAt(e: MouseEvent) {
+    if (!stage || catRows.length < 2) return -1;
+    const r = stage.getBoundingClientRect();
+    const fx = (e.clientX - r.left) / r.width - 0.5;
+    const fy = (e.clientY - r.top) / r.height;
+    if (fy < 0.12 || fy > 0.88) return -1;
+    const n = catRows.length;
+    let best = -1;
+    for (let j = 0; j < n; j++) {
+      let d = j - ci;
+      if (n > 2) {
+        d = ((d % n) + n) % n;
+        if (d > n / 2) d -= n;
+      }
+      const half = d === 0 ? 0.2 : 0.13;
+      if (Math.abs(fx - d * SIDE_X) < half && (best < 0 || d === 0)) best = j;
+    }
+    return best;
+  }
+  stage?.addEventListener('click', (e) => {
+    if (level !== 'browse') return;
+    if (!PHONE.matches) {
+      const hit = modelAt(e);
+      if (hit >= 0 && hit !== ci) {
+        selectCat(hit);
+        return;
+      }
+    }
+    open();
+  });
 
   /* ---- keyboard: runs before the router's own handler so Esc can step back first ---- */
   window.addEventListener(
@@ -180,6 +245,22 @@ if (pane) {
     },
     true,
   );
+
+  /* ---- phones: no hover, so the categories (and their colour themes) cycle by themselves ---- */
+  let holdUntil = 0;
+  const hold = (ms = 10000) => (holdUntil = performance.now() + ms);
+  pane.addEventListener('pointerdown', () => hold(), { passive: true });
+  document.addEventListener('stage:swipe', (e) => {
+    const d = (e as CustomEvent).detail as { dir: number; pane: string };
+    if (d.pane !== 'projects' || level !== 'browse') return;
+    hold(14000);
+    selectCat(ci + d.dir);
+  });
+  setInterval(() => {
+    if (!PHONE.matches || reduce.matches || document.hidden) return;
+    if (document.documentElement.dataset.pane !== 'projects' || level !== 'browse' || performance.now() < holdUntil) return;
+    selectCat(ci + 1);
+  }, 4500);
 
   /* ---- coming and going ---- */
   document.addEventListener('pane:change', (e) => {

@@ -15,6 +15,17 @@ const items = (await getCollection('projects'))
       a.data.title.localeCompare(b.data.title),
   );
 
+const counts = {
+  prototype: items.filter((p) => p.data.stage === 'prototype').length,
+  production: items.filter((p) => p.data.stage === 'production').length,
+  shipped: items.filter((p) => p.data.stage === 'shipped').length,
+};
+const outCells = [
+  { key: 'prototype', label: 'Prototypes', look: 'Wireframe' },
+  { key: 'production', label: 'In production', look: 'Cast' },
+  { key: 'shipped', label: 'Shipped', look: 'Polished' },
+] as const;
+
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 
 // Menu models with any .glb file turned into a URL under the site's base path.
@@ -52,7 +63,7 @@ const menu = [
   <!-- MENU: the built-in control menu. This is the home screen. -->
   <section class="pane" data-pane="menu" aria-labelledby="menu-h" hidden>
     <div class="menu">
-      <div class="menu-stage" aria-hidden="true" data-models={JSON.stringify(menuStage)}>
+      <div class="menu-stage" aria-hidden="true" data-swipe="stage" data-models={JSON.stringify(menuStage)}>
         <canvas></canvas>
         <i class="menu-shadow"></i>
       </div>
@@ -67,6 +78,11 @@ const menu = [
       </div>
 
       <div>
+        <!-- Phones: the object is the button. This names the one on screen (the list below is then for keyboards and screen readers). -->
+        <div class="menu-pick" aria-hidden="true">
+          <b data-menu-name>{menu[0].label}</b>
+          <span class="pick-dots">{menu.map((m, i) => <i data-menu-dot={m.key} class:list={{ on: i === 0 }}></i>)}</span>
+        </div>
         <ul class="menu-list" role="list">
           {
             menu.map((m) => (
@@ -83,34 +99,54 @@ const menu = [
             Select: <i class="tri up"></i><i class="tri down"></i> key &nbsp; Set: <i
               class="tri right"></i> key &nbsp; End: esc key
           </span>
-          <span class="k-touch">Tap a line to open it</span>
+          <span class="k-touch">Tap the object to open it. Swipe it to browse.</span>
         </p>
       </div>
     </div>
   </section>
 
+  <!-- INTRO: concept -> in production -> shipped. Plays once per visit (see src/scripts/intro.ts). -->
+  <div class="intro-screen" id="intro" data-act="1" aria-hidden="true">
+    <div class="intro-bg bg1"><span class="blue-title"><b>Proto 001</b><i>AD monogram / rev 0.1</i></span></div>
+    <div class="intro-bg bg2">
+      <i class="beacon l"></i><i class="beacon r"></i><i class="redwash"></i>
+      <i class="tape a"></i><i class="tape b"></i>
+    </div>
+    <canvas class="intro-gl" id="intro-gl"></canvas>
+    <canvas class="crt-static intro-static" id="intro-static"></canvas>
+    <p class="intro-cap" id="intro-cap"></p>
+    <button class="intro-skip" id="intro-skip" type="button">Skip &#9656;</button>
+  </div>
+
   <!-- ABOUT -->
   <section class="pane" data-pane="about" aria-labelledby="about-h" hidden>
+    <button type="button" class="btn sm reboot" data-reboot>Reboot</button>
     <div class="split">
       <div class="text-screen">
-        <p class="prompt">&gt; LOAD AD_FACTORY.SYS</p>
-        <h1 id="about-h">{site.name}</h1>
-        <p class="lede">{site.about.headline}</p>
-        {site.about.paragraphs.map((p) => <p>{p}</p>)}
-        <p class="prompt">&gt; <i class="cursor"></i></p>
+        <ul class="boot-log" aria-hidden="true"></ul>
+        <p class="prompt bt" data-type>&gt; LOAD AD_FACTORY.SYS</p>
+        <h1 id="about-h" class="bt">{site.name}</h1>
+        <p class="lede bt">{site.about.headline}</p>
+        {site.about.paragraphs.map((p) => <p class:list={['bt', { 'desk-only': /^Press Esc/.test(p) }]}>{p}</p>)}
+        <p class="prompt bt">&gt; <i class="cursor"></i></p>
       </div>
       <aside class="side">
-        <ModelStage kind={site.about.model.kind} tag={site.about.model.tag} label={site.about.model.label} file={site.about.model.file} />
-        <ul class="spec">
-          {
-            site.about.spec.map(([k, v]) => (
-              <li>
-                <span>{k}</span>
-                {v}
-              </li>
-            ))
-          }
-        </ul>
+        <ModelStage kind={site.about.model.kind} tag={site.about.model.tag} label={site.about.model.label} file={site.about.model.file}>
+        </ModelStage>
+        <div class="output" role="group" aria-label="Factory output. Choose a stage to see the logo at that finish.">
+          <p class="output-h">Factory output</p>
+          <div class="output-cells">
+            {
+              outCells.map((c, i) => (
+                <button type="button" class="out-cell" data-look={i} data-count={counts[c.key]} data-key={c.key} aria-label={`${counts[c.key]} ${c.label.toLowerCase()}. Show the logo as ${c.look.toLowerCase()}.`}>
+                  <span class="odo" aria-hidden="true" />
+                  <b>{c.label}</b>
+                  <i>{c.look}</i>
+                </button>
+              ))
+            }
+          </div>
+        </div>
       </aside>
     </div>
   </section>
@@ -135,7 +171,7 @@ const menu = [
     {
       cats.length > 0 ? (
         <div class="proj">
-          <div class="proj-stage" aria-hidden="true" data-models={JSON.stringify(projModels)}>
+          <div class="proj-stage" aria-hidden="true" data-swipe="stage" data-models={JSON.stringify(projModels)}>
             <div class="proj-orb">
               <i class="rays" />
               <i class="ring" />
@@ -169,6 +205,11 @@ const menu = [
               </li>
             ))}
           </ul>
+
+          <div class="proj-pick" aria-hidden="true">
+            <b data-proj-name>{first?.label}</b>
+            <span class="pick-dots">{cats.map((c) => <i data-proj-dot={c.key} class:list={{ on: c === first }} />)}</span>
+          </div>
 
           {cats.map((c) => (
             <div class="proj-view" data-view={c.key}>
@@ -229,15 +270,18 @@ const menu = [
           <p class="legend proj-legend">
             <span class="k-desk">
               <span data-when="browse">
-                Select: <i class="tri up" />
-                <i class="tri down" /> key &nbsp; Open: <i class="tri right" /> key &nbsp; End: esc key
+                Select: click or <i class="tri up" />
+                <i class="tri down" /> key &nbsp; Open: click or <i class="tri right" /> key &nbsp; End: esc key
               </span>
               <span data-when="open">
                 Select: <i class="tri up" />
                 <i class="tri down" /> key &nbsp; Go: enter key &nbsp; Back: <i class="tri left" /> key
               </span>
             </span>
-            <span class="k-touch">Tap a line</span>
+            <span class="k-touch">
+              <span data-when="browse">Tap the object to open it. Swipe it to browse.</span>
+              <span data-when="open">Swipe right to go back.</span>
+            </span>
           </p>
         </div>
       ) : (
@@ -257,7 +301,7 @@ const menu = [
 
     <div class="tv">
       <div class="tv-main">
-        <div class="tv-screen">
+        <div class="tv-screen" data-swipe="tv">
           <iframe
             title="TV"
             src="about:blank"
@@ -343,8 +387,11 @@ const menu = [
 
 <script>
   import '../scripts/router.ts';
+  import '../scripts/swipe.ts';
   import '../scripts/models.ts';
   import '../scripts/menu.ts';
   import '../scripts/projects.ts';
   import '../scripts/tv.ts';
+  import '../scripts/about.ts';
+  import '../scripts/intro.ts';
 </script>

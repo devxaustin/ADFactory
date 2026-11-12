@@ -15,6 +15,7 @@ const root = document.documentElement;
 const panes = Array.from(document.querySelectorAll<HTMLElement>('.pane'));
 const navs = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-nav]'));
 const canvas = document.getElementById('crt-static') as HTMLCanvasElement | null;
+const dots = Array.from(document.querySelectorAll<HTMLElement>('[data-dot]'));
 
 function fromHash(): Screen {
   const h = location.hash.slice(1);
@@ -35,6 +36,7 @@ function show(name: Screen, animate: boolean) {
     else a.removeAttribute('aria-current');
   }
   root.dataset.pane = name;
+  for (const d of dots) d.classList.toggle('on', d.dataset.dot === name);
 
   const pane = panes.find((p) => p.dataset.pane === name);
   if (pane) {
@@ -50,7 +52,7 @@ function show(name: Screen, animate: boolean) {
   document.dispatchEvent(new CustomEvent('pane:change', { detail: { name, prev } }));
 }
 
-function go(name: Screen) {
+export function go(name: Screen) {
   show(name, true);
   history.replaceState(null, '', `#${name}`);
 }

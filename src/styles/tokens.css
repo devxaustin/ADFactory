@@ -62,3 +62,14 @@
     --px: 4px;
   }
 }
+
+/* ============================================================
+   PHONES AND TABLETS: lighter glow recipes. The text-shadow sits on every
+   word on the screen, so three stacked shadows get expensive while scrolling.
+   ============================================================ */
+@media not all and (min-width: 1000px) and (min-height: 560px) and (pointer: fine) {
+  :root {
+    --glow-text: 0 0 4px rgb(var(--ph-rgb) / 0.5);
+    --glow-box: 0 0 8px rgb(var(--ph-rgb) / 0.35);
+  }
+}

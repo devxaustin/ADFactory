@@ -1453,264 +1453,6 @@ html[data-proj-level='open'] .proj-mesh.far {
     display: block;
   }
 
-  /* Projects: categories on the right with a big floating model on the left. Opening a category
-     slides the model (and its orb) aside while the project list and its panel animate in. */
-  .pj .proj {
-    grid-template-columns: minmax(0, 0.9fr) minmax(0, 2.5fr);
-    grid-template-rows: minmax(0, 1fr) auto;
-    align-items: center;
-    align-content: stretch;
-    gap: 0;
-    padding: 0 var(--gutter) 0.6rem;
-  }
-  .pj > .pane-head {
-    padding-inline: calc(var(--gutter) * 1.2);
-  }
-  .proj-stage {
-    display: block;
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-  }
-  .proj-stage canvas {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    image-rendering: pixelated;
-    filter: drop-shadow(0 0 1.4rem rgb(var(--accent2-rgb) / 0.45));
-  }
-
-  /* The orb behind the model. It travels with it: same two spots, same overshoot. */
-  .proj-orb {
-    position: absolute;
-    left: 30%;
-    top: 52%;
-    height: 76%;
-    aspect-ratio: 1;
-    translate: -50% -50%;
-    transition:
-      left 0.9s cubic-bezier(0.3, 1.2, 0.4, 1),
-      top 0.9s cubic-bezier(0.3, 1.2, 0.4, 1),
-      scale 0.9s cubic-bezier(0.3, 1.2, 0.4, 1);
-  }
-  html[data-proj-level='open'] .proj-orb {
-    left: 13.5%;
-    top: 44.5%;
-    scale: 0.54;
-  }
-  .proj-orb i {
-    position: absolute;
-    display: block;
-    border-radius: 50%;
-  }
-  .proj-orb .body {
-    inset: 0;
-    background: radial-gradient(
-      circle at 36% 30%,
-      rgb(244 255 150 / 0.95) 0,
-      rgb(176 232 40 / 0.85) 16%,
-      rgb(54 178 44 / 0.7) 46%,
-      rgb(6 70 16 / 0.82) 76%,
-      rgb(2 28 6 / 0.9) 100%
-    );
-    box-shadow:
-      0 0 4rem rgb(var(--accent2-rgb) / 0.55),
-      inset 0 0 3rem rgb(0 0 0 / 0.55),
-      inset 0 0 0 3px rgb(190 255 140 / 0.35);
-    animation: orb-breathe 4.5s ease-in-out infinite;
-  }
-  html[data-proj-theme='ipod'] .proj-orb .body {
-    background: radial-gradient(circle at 36% 30%, #fff 0, rgb(236 240 246 / 0.95) 22%, rgb(190 198 212 / 0.85) 58%, rgb(140 150 170 / 0.8) 100%);
-    box-shadow:
-      0 0 3.5rem rgb(120 130 150 / 0.45),
-      inset 0 0 2.5rem rgb(90 100 120 / 0.35),
-      inset 0 0 0 3px rgb(255 255 255 / 0.8);
-  }
-  html[data-proj-theme='ipod'] .proj-orb .ring {
-    border-style: solid;
-    border-color: rgb(var(--accent2-rgb) / 0.7);
-  }
-  @keyframes orb-breathe {
-    50% {
-      filter: brightness(1.18);
-      box-shadow:
-        0 0 5.5rem rgb(var(--accent2-rgb) / 0.75),
-        inset 0 0 3rem rgb(0 0 0 / 0.5),
-        inset 0 0 0 3px rgb(190 255 140 / 0.5);
-    }
-  }
-  .proj-orb .ring {
-    inset: -8%;
-    border: 2px dashed rgb(var(--accent2-rgb) / 0.55);
-    animation: spin 38s linear infinite;
-  }
-  .proj-orb .rays {
-    inset: -110%;
-    background: conic-gradient(
-      from 0deg,
-      transparent 0 4%,
-      rgb(var(--accent-rgb) / 0.2) 6% 7.5%,
-      transparent 10% 24%,
-      rgb(var(--accent2-rgb) / 0.18) 27% 28.5%,
-      transparent 31% 47%,
-      rgb(var(--accent-rgb) / 0.16) 50% 51.5%,
-      transparent 54% 71%,
-      rgb(var(--accent2-rgb) / 0.2) 74% 75.5%,
-      transparent 78% 100%
-    );
-    -webkit-mask-image: radial-gradient(circle, #000 18%, transparent 62%);
-    mask-image: radial-gradient(circle, #000 18%, transparent 62%);
-    animation: spin 46s linear infinite;
-  }
-  /* One ring of light flies off the orb every time the level changes */
-  .proj-orb .pulse {
-    inset: 0;
-    border: 3px solid rgb(var(--accent-rgb));
-    opacity: 0;
-  }
-  .pj[data-level='open'] .proj-orb .pulse {
-    animation: orb-pulse-a 0.95s ease-out;
-  }
-  .pj[data-level='browse'] .proj-orb .pulse {
-    animation: orb-pulse-b 0.95s ease-out;
-  }
-  @keyframes orb-pulse-a {
-    from {
-      opacity: 0.9;
-      transform: scale(0.9);
-    }
-    to {
-      opacity: 0;
-      transform: scale(2.3);
-    }
-  }
-  @keyframes orb-pulse-b {
-    from {
-      opacity: 0.9;
-      transform: scale(0.9);
-    }
-    to {
-      opacity: 0;
-      transform: scale(2.3);
-    }
-  }
-
-  .proj-cats {
-    grid-column: 2;
-    grid-row: 1;
-    justify-self: center;
-    width: min(32rem, 100%);
-    gap: 0.6rem;
-    position: relative;
-    z-index: 1;
-    transition:
-      transform 0.5s cubic-bezier(0.3, 1.2, 0.5, 1),
-      opacity 0.3s steps(4);
-  }
-  .pj[data-level='open'] .proj-cats {
-    transition:
-      transform 0.5s cubic-bezier(0.3, 1.2, 0.5, 1),
-      opacity 0.3s steps(4),
-      visibility 0s linear 0.3s;
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transform: translateX(4rem);
-  }
-  .proj-cats .proj-row {
-    padding: 0.85rem 1.4rem;
-    font-size: clamp(1.8rem, 2.5vw, 3rem);
-  }
-  .pj.intro .proj-cats .proj-row {
-    animation: row-in 0.5s steps(6) calc(var(--i, 0) * 90ms + 250ms) backwards;
-  }
-
-  .proj-view {
-    grid-column: 2;
-    grid-row: 1;
-    position: relative;
-    z-index: 1;
-    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
-    align-items: center;
-    gap: clamp(1.4rem, 3vw, 4.5rem);
-    visibility: hidden;
-    pointer-events: none;
-  }
-  .pj .proj-view.is-open {
-    visibility: visible;
-    pointer-events: auto;
-  }
-  .proj-glist {
-    gap: 0.55rem;
-  }
-  .proj-glist .proj-row {
-    padding: 0.8rem 1.2rem;
-    font-size: clamp(1.25rem, 1.7vw, 2.1rem);
-    opacity: 0;
-    transform: translateX(3.5rem);
-    transition:
-      opacity 0.25s steps(4),
-      transform 0.45s cubic-bezier(0.3, 1.3, 0.5, 1),
-      color 0.2s steps(3);
-  }
-  .proj-view.is-open .proj-glist .proj-row {
-    opacity: 1;
-    transform: none;
-    transition-delay: calc(var(--i, 0) * 75ms + 300ms), calc(var(--i, 0) * 75ms + 300ms), 0s;
-  }
-  .proj-view.is-open .proj-glist .proj-row.is-sel {
-    transform: translateX(0.9rem);
-  }
-  .proj-glist > li.hl {
-    opacity: 0;
-    transition:
-      opacity 0.2s steps(3) 0.5s,
-      transform 0.4s cubic-bezier(0.3, 1.45, 0.5, 1),
-      height 0.4s cubic-bezier(0.3, 1.45, 0.5, 1);
-  }
-  .proj-view.is-open .proj-glist > li.hl {
-    opacity: 1;
-  }
-  .proj-detail {
-    padding: 1.9rem 2.1rem 2.1rem;
-    gap: 1rem;
-    opacity: 0;
-  }
-  .proj-view.is-open .proj-detail.is-on {
-    opacity: 1;
-    animation: crt-on 0.5s steps(8) 0.55s backwards;
-  }
-  .proj-detail h3 {
-    font-size: clamp(1.9rem, 2.8vw, 3.4rem);
-  }
-  .proj-detail .summary {
-    font-size: 1.2em;
-  }
-  .proj-detail .meta-line,
-  .proj-detail .badge {
-    font-size: 0.85rem;
-  }
-  .proj-detail .btn {
-    font-size: 0.95rem;
-    padding: 0.65rem 1.1rem;
-  }
-  .proj-view.is-open .proj-detail.is-on .meter .seg.on {
-    animation: seg-on 0.2s steps(2) calc(var(--n, 0) * 70ms + 1.1s) backwards;
-  }
-  .proj-view.is-open .proj-detail.is-on.swap .meter .seg.on {
-    animation-delay: calc(var(--n, 0) * 60ms + 0.2s);
-  }
-  .proj-view.is-open .proj-detail.is-on.swap {
-    animation: glitch 0.32s steps(1, end);
-  }
-  .proj-legend {
-    grid-column: 1 / -1;
-    grid-row: 2;
-    align-self: end;
-    padding-left: calc(var(--gutter) * 0.2);
-  }
   .legend {
     font-size: 0.95rem;
   }
@@ -1886,4 +1628,1190 @@ html[data-proj-level='open'] .proj-mesh.far {
   .doc {
     max-width: 72rem;
   }
+}
+
+/* The page dots, and the "which object is this" captions, exist on phones only */
+.m-dots,
+.menu-pick,
+.proj-pick {
+  display: none;
+}
+
+/* ============================================================
+   PHONES AND TABLETS. The same screens as the desktop, rearranged for a thumb:
+   the 3D object sits in the top half, the big buttons in the bottom half, and a
+   Menu button plus page dots sit in a thin strip along the top. No monitor frame.
+   Swipe rules live in scripts/swipe.ts: on the model = browse it, anywhere else = flip pages.
+   ============================================================ */
+@media not all and (min-width: 1000px) and (min-height: 560px) and (pointer: fine) {
+  html,
+  body {
+    overscroll-behavior: none;
+  }
+  .hud {
+    display: none;
+  }
+  /* With the header gone, the screen is the first grid row and takes all the room (the bottom bar stays auto). */
+  .monitor {
+    grid-template-rows: minmax(0, 1fr) auto;
+  }
+
+  /* Lighter CRT: drop the layers nobody can see at phone density (the rest of the look stays) */
+  .crt-triad,
+  .crt-glare {
+    display: none;
+  }
+  /* Switching screens: sideways wobble only. No filter, which would re-render the 3D canvas every frame. */
+  .tune {
+    animation: tune-m 280ms steps(7, end) both;
+  }
+  @keyframes tune-m {
+    0% {
+      transform: translateX(-10px);
+      opacity: 0.2;
+    }
+    30% {
+      transform: translateX(7px);
+      opacity: 0.7;
+    }
+    60% {
+      transform: translateX(-3px);
+      opacity: 0.9;
+    }
+    100% {
+      transform: none;
+      opacity: 1;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tune {
+      animation: none;
+    }
+  }
+
+  /* ---- Top strip: Menu button on the left, page dots in the middle ---- */
+  body[data-page='home'] .osd {
+    position: absolute;
+    top: calc(env(safe-area-inset-top) + 0.6rem);
+    left: var(--gutter);
+    right: var(--gutter);
+    z-index: 6;
+    padding: 0;
+    pointer-events: none;
+  }
+  body[data-page='home'] .osd .btn {
+    pointer-events: auto;
+    min-height: 2.75rem;
+    padding-inline: 1rem;
+    font-size: 0.9rem;
+  }
+  body[data-page='home'] .m-dots {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    gap: 0.6rem;
+  }
+  .m-dots i {
+    width: 0.7rem;
+    height: 0.7rem;
+    border: 2px solid currentColor;
+    opacity: 0.6;
+  }
+  .m-dots i.on {
+    background: currentColor;
+    opacity: 1;
+    box-shadow: var(--glow-box);
+  }
+
+  /* ---- Panes: sideways touches stay with the page (swipe.ts); up/down scrolls ---- */
+  .pane {
+    touch-action: pan-y;
+    padding-top: calc(env(safe-area-inset-top) + 3.8rem);
+    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
+  }
+  .rng {
+    touch-action: none;
+  }
+
+  /* ---- Home: name on top, the floating object in the middle, four big buttons at the bottom ---- */
+  .pane[data-pane='menu'] {
+    padding: calc(env(safe-area-inset-top) + 0.9rem) var(--gutter) calc(1rem + env(safe-area-inset-bottom));
+    overflow: hidden;
+  }
+  .menu {
+    flex: 1;
+    min-height: 0;
+    margin: 0 auto;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    gap: 0.6rem;
+  }
+  .menu-hero {
+    order: -1; /* the markup puts the stage first; the name goes above it */
+    justify-items: center;
+    text-align: center;
+    gap: 0.3rem;
+  }
+  .menu-hero h1 {
+    font-size: clamp(1.5rem, 7.4vw, 2.1rem);
+  }
+  .menu-hero .lede {
+    max-width: none;
+    font-size: 1rem;
+  }
+  .menu-stage {
+    display: block;
+    position: relative;
+    min-height: 0;
+    touch-action: pan-y;
+  }
+  .menu-stage::before {
+    content: '';
+    position: absolute;
+    inset: 4% 6%;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgb(var(--ph-rgb) / 0.28), rgb(var(--ph-rgb) / 0.08) 58%, transparent 78%);
+  }
+  .menu-stage canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+  }
+  .menu-stage.no-gl,
+  .proj-stage.no-gl {
+    display: none;
+  }
+  .menu-shadow {
+    position: absolute;
+    left: 50%;
+    bottom: 3%;
+    width: 46%;
+    height: 6%;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: radial-gradient(ellipse, rgb(0 0 0 / 0.38), transparent 70%);
+  }
+  .menu-list {
+    padding: 0;
+    gap: 0.6rem;
+  }
+  .menu-row {
+    display: flex;
+    align-items: center;
+    min-height: 3.5rem;
+    padding: 0 1rem 0 2.8rem;
+    font-size: clamp(1.5rem, 7vw, 1.9rem);
+    border: 2px solid rgb(var(--ph-rgb) / 0.5);
+    background: rgb(0 10 90 / 0.3);
+  }
+  .menu-row::before {
+    left: 1rem;
+    border-left-color: var(--on-ph);
+  }
+  .menu-row.is-sel {
+    border-color: transparent;
+  }
+  .legend {
+    padding-left: 0;
+    margin-top: 0.7rem;
+    text-align: center;
+    font-size: 0.7rem;
+  }
+
+  /* ---- About and Contact: the model on top, then the text ---- */
+  .split {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+  }
+  .side {
+    display: contents;
+  }
+  .model-stage {
+    display: block;
+    order: -2;
+    aspect-ratio: auto;
+    height: 32dvh;
+    min-height: 11rem;
+  }
+  .text-screen {
+    order: -1;
+  }
+  .ms-hint {
+    top: 0.7rem;
+    bottom: auto;
+  }
+  .links a:not(.btn) {
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+  }
+
+  /* ---- Projects: model on top (it changes with the category and takes its colours), lines below ---- */
+  .pj > .pane-head {
+    position: absolute;
+    top: calc(env(safe-area-inset-top) + 0.6rem);
+    right: var(--gutter);
+    z-index: 6;
+    margin: 0;
+    padding: 0;
+  }
+  .pj > .pane-head h2 {
+    display: none;
+  }
+  .pj[data-level='browse'] .crumb,
+  .pj .crumb [data-crumb] {
+    display: none;
+  }
+  /* In an open category the Back button takes the right side, so the dots step aside */
+  html[data-proj-level='open'][data-pane='projects'] .m-dots {
+    display: none;
+  }
+  /* Only the open category's list shows */
+  .proj-view:not(.is-open) {
+    display: none;
+  }
+  .pj .crumb .btn {
+    min-height: 2.75rem;
+    padding-inline: 1rem;
+    font-size: 0.9rem;
+  }
+  .pj .proj {
+    display: block;
+    padding: 0 var(--gutter) calc(1.2rem + env(safe-area-inset-bottom));
+  }
+  .proj-stage {
+    display: block;
+    position: relative;
+    height: calc(env(safe-area-inset-top) + 42dvh);
+    margin: 0 calc(var(--gutter) * -1) 1rem;
+    touch-action: pan-y;
+  }
+  html[data-proj-level='open'] .proj-stage {
+    height: calc(env(safe-area-inset-top) + 22dvh);
+  }
+  /* Same spacing as the home screen: the model takes whatever room is left on top, the lines sit
+     at the bottom in thumb reach. This covers the category list and an open category's project list. */
+  .pj[data-level='browse'] .proj,
+  .pj[data-level='open']:not([data-pick]) .proj {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto auto;
+    gap: 0.6rem;
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+  }
+  .pj[data-level='browse'] .proj-stage,
+  .pj[data-level='open']:not([data-pick]) .proj-stage {
+    height: auto;
+    min-height: 14rem;
+    margin-bottom: 0;
+  }
+  /* A project is chosen: the other lines fold away, the model shrinks, and the details take the screen */
+  .pj:not([data-pick]) .proj-details {
+    display: none;
+  }
+  .proj-glist > li.away {
+    display: none;
+  }
+  .proj-stage canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+  }
+  /* The glass orb behind the model: one still layer, no spinning rays or pulses */
+  .proj-orb {
+    position: absolute;
+    left: 50%;
+    top: calc(50% + env(safe-area-inset-top) / 2);
+    height: min(66%, 70vw);
+    aspect-ratio: 1;
+    translate: -50% -50%;
+  }
+  .proj-orb i {
+    position: absolute;
+    display: block;
+    border-radius: 50%;
+  }
+  .proj-orb .rays,
+  .proj-orb .pulse {
+    display: none;
+  }
+  .proj-orb .body {
+    inset: 0;
+    background: radial-gradient(
+      circle at 36% 30%,
+      rgb(244 255 150 / 0.95) 0,
+      rgb(176 232 40 / 0.85) 16%,
+      rgb(54 178 44 / 0.7) 46%,
+      rgb(6 70 16 / 0.82) 76%,
+      rgb(2 28 6 / 0.9) 100%
+    );
+    box-shadow:
+      0 0 2.5rem rgb(var(--accent2-rgb) / 0.5),
+      inset 0 0 0 3px rgb(190 255 140 / 0.35);
+  }
+  html[data-proj-theme='ipod'] .proj-orb .body {
+    background: radial-gradient(circle at 36% 30%, #fff 0, rgb(236 240 246 / 0.95) 22%, rgb(190 198 212 / 0.85) 58%, rgb(140 150 170 / 0.8) 100%);
+    box-shadow:
+      0 0 2rem rgb(120 130 150 / 0.45),
+      inset 0 0 0 3px rgb(255 255 255 / 0.8);
+  }
+  .proj-orb .ring {
+    inset: -8%;
+    border: 2px dashed rgb(var(--accent2-rgb) / 0.55);
+  }
+  html[data-proj-theme='ipod'] .proj-orb .ring {
+    border-style: solid;
+    border-color: rgb(var(--accent2-rgb) / 0.7);
+  }
+  /* Drifting wire mesh repaints the whole screen every frame; the glow filters re-render on every move */
+  .proj-mesh,
+  .proj-mesh.far {
+    animation: none;
+  }
+  .proj-cats,
+  .proj-glist,
+  .proj-details {
+    filter: none;
+  }
+  /* The highlight bar sits a little to the right of its list (see .hl): leave room so it stays on screen */
+  .proj-cats,
+  .proj-glist {
+    margin-right: 0.9rem;
+  }
+  .proj-row {
+    min-height: 3.5rem;
+  }
+  .proj-legend {
+    margin-top: 0.8rem;
+    text-align: center;
+    font-size: 0.7rem;
+  }
+
+  /* ---- Media: the TV, with thumb-sized controls. Swipe the picture to change the channel. ---- */
+  .tv-readout .btn,
+  .tv-guide .btn {
+    min-height: 2.75rem;
+    min-width: 3.2rem;
+  }
+  .tv-deck .btn {
+    min-height: 2.5rem;
+  }
+
+  /* ---- The objects are the buttons: tap one to open its page, swipe to bring the next one around.
+          Below it sits only its name and a row of dots. ---- */
+  .menu-stage,
+  .proj-stage {
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .menu-stage:active canvas,
+  .proj-stage:active canvas {
+    transform: scale(0.97);
+  }
+  .menu-pick,
+  .proj-pick {
+    display: grid;
+    justify-items: center;
+    gap: 0.7rem;
+    padding-top: 0.2rem;
+    text-align: center;
+  }
+  .menu-pick b,
+  .proj-pick b {
+    font-family: var(--font-display);
+    font-size: clamp(1.9rem, 9vw, 2.5rem);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+  html[data-proj-theme='ipod'] .proj-pick b {
+    text-shadow: none;
+  }
+  .pick-dots {
+    display: flex;
+    gap: 0.6rem;
+  }
+  .pick-dots i {
+    width: 0.7rem;
+    height: 0.7rem;
+    border: 2px solid currentColor;
+    opacity: 0.6;
+  }
+  .pick-dots i.on {
+    background: currentColor;
+    opacity: 1;
+  }
+  .pj[data-level='open'] .proj-pick {
+    display: none;
+  }
+  /* The text lists stay in the page for keyboards and screen readers, just not on screen */
+  .menu-list,
+  .proj-cats {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* ---- Phones on their side: model left, buttons right ---- */
+  @media (orientation: landscape) and (max-height: 520px) {
+    .pane {
+      padding-top: calc(env(safe-area-inset-top) + 3.4rem);
+    }
+    .menu {
+      max-width: none;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      grid-template-rows: minmax(0, 1fr);
+      align-items: center;
+      column-gap: 1.2rem;
+    }
+    .menu-hero {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+    .menu-stage {
+      height: 100%;
+    }
+    .menu-row {
+      min-height: 2.8rem;
+      font-size: 1.3rem;
+    }
+    .pj[data-level='browse'] .proj,
+    .pj[data-level='open']:not([data-pick]) .proj {
+      display: block;
+    }
+    .proj-stage,
+    .pj[data-level='browse'] .proj-stage,
+    .pj[data-level='open']:not([data-pick]) .proj-stage {
+      height: 60dvh;
+      margin-bottom: 1rem;
+    }
+    html[data-proj-level='open'] .proj-stage {
+      height: 40dvh;
+    }
+    .model-stage {
+      height: 60dvh;
+    }
+  }
+}
+
+/* ---------- Projects: the phone layout on every screen size ----------
+   The object sits in the middle with its name and dots underneath. Click (or tap) it to open the line.
+   The category list stays in the page for keyboards and screen readers only. */
+/* ---- Projects: model on top (it changes with the category and takes its colours), lines below ---- */
+.pj > .pane-head {
+  position: absolute;
+  top: calc(env(safe-area-inset-top) + 0.6rem);
+  right: var(--gutter);
+  z-index: 6;
+  margin: 0;
+  padding: 0;
+}
+.pj > .pane-head h2 {
+  display: none;
+}
+.pj[data-level='browse'] .crumb,
+.pj .crumb [data-crumb] {
+  display: none;
+}
+/* In an open category the Back button takes the right side, so the dots step aside */
+html[data-proj-level='open'][data-pane='projects'] .m-dots {
+  display: none;
+}
+/* Only the open category's list shows */
+.proj-view:not(.is-open) {
+  display: none;
+}
+.pj .crumb .btn {
+  min-height: 2.75rem;
+  padding-inline: 1rem;
+  font-size: 0.9rem;
+}
+.pj .proj {
+  display: block;
+  padding: 0 var(--gutter) calc(1.2rem + env(safe-area-inset-bottom));
+}
+.proj-stage {
+  display: block;
+  position: relative;
+  height: calc(env(safe-area-inset-top) + 42dvh);
+  margin: 0 calc(var(--gutter) * -1) 1rem;
+  touch-action: pan-y;
+}
+html[data-proj-level='open'] .proj-stage {
+  height: calc(env(safe-area-inset-top) + 22dvh);
+}
+/* Same spacing as the home screen: the model takes whatever room is left on top, the lines sit
+   at the bottom in thumb reach. This covers the category list and an open category's project list. */
+.pj[data-level='browse'] .proj,
+.pj[data-level='open']:not([data-pick]) .proj {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto auto;
+  gap: 0.6rem;
+  padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+}
+.pj[data-level='browse'] .proj-stage,
+.pj[data-level='open']:not([data-pick]) .proj-stage {
+  height: auto;
+  min-height: 14rem;
+  margin-bottom: 0;
+}
+/* A project is chosen: the other lines fold away, the model shrinks, and the details take the screen */
+.pj:not([data-pick]) .proj-details {
+  display: none;
+}
+.proj-glist > li.away {
+  display: none;
+}
+.proj-stage canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+}
+/* The glass orb behind the model: one still layer, no spinning rays or pulses */
+.proj-orb {
+  position: absolute;
+  left: 50%;
+  top: calc(50% + env(safe-area-inset-top) / 2);
+  height: min(50%, 70vw);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+}
+.proj-orb i {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+}
+.proj-orb .rays,
+.proj-orb .pulse {
+  display: none;
+}
+.proj-orb .body {
+  inset: 0;
+  background: radial-gradient(
+    circle at 36% 30%,
+    rgb(244 255 150 / 0.95) 0,
+    rgb(176 232 40 / 0.85) 16%,
+    rgb(54 178 44 / 0.7) 46%,
+    rgb(6 70 16 / 0.82) 76%,
+    rgb(2 28 6 / 0.9) 100%
+  );
+  box-shadow:
+    0 0 2.5rem rgb(var(--accent2-rgb) / 0.5),
+    inset 0 0 0 3px rgb(190 255 140 / 0.35);
+}
+html[data-proj-theme='ipod'] .proj-orb .body {
+  background: radial-gradient(circle at 36% 30%, #fff 0, rgb(236 240 246 / 0.95) 22%, rgb(190 198 212 / 0.85) 58%, rgb(140 150 170 / 0.8) 100%);
+  box-shadow:
+    0 0 2rem rgb(120 130 150 / 0.45),
+    inset 0 0 0 3px rgb(255 255 255 / 0.8);
+}
+.proj-orb .ring {
+  inset: -8%;
+  border: 2px dashed rgb(var(--accent2-rgb) / 0.55);
+}
+html[data-proj-theme='ipod'] .proj-orb .ring {
+  border-style: solid;
+  border-color: rgb(var(--accent2-rgb) / 0.7);
+}
+/* Drifting wire mesh repaints the whole screen every frame; the glow filters re-render on every move */
+.proj-mesh,
+.proj-mesh.far {
+  animation: none;
+}
+.proj-cats,
+.proj-glist,
+.proj-details {
+  filter: none;
+}
+/* The highlight bar sits a little to the right of its list (see .hl): leave room so it stays on screen */
+.proj-cats,
+.proj-glist {
+  margin-right: 0.9rem;
+}
+.proj-row {
+  min-height: 3.5rem;
+}
+.proj-legend {
+  margin-top: 0.8rem;
+  text-align: center;
+  font-size: 0.7rem;
+}
+
+.proj-stage {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.proj-stage:active canvas {
+  transform: scale(0.97);
+}
+.proj-pick {
+  display: grid;
+  justify-items: center;
+  gap: 0.7rem;
+  padding-top: 0.2rem;
+  text-align: center;
+}
+.proj-pick b {
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 9vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+html[data-proj-theme='ipod'] .proj-pick b {
+  text-shadow: none;
+}
+.pick-dots {
+  display: flex;
+  gap: 0.6rem;
+}
+.pick-dots i {
+  width: 0.7rem;
+  height: 0.7rem;
+  border: 2px solid currentColor;
+  opacity: 0.6;
+}
+.pick-dots i.on {
+  background: currentColor;
+  opacity: 1;
+}
+.pj[data-level='open'] .proj-pick {
+  display: none;
+}
+.proj-cats {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+/* Desktop has the room: a bigger orb for the bigger models, and a pointer cursor on the side models */
+@media (min-width: 1000px) and (min-height: 560px) and (pointer: fine) {
+  .proj-orb {
+    height: min(70%, 60vh);
+  }
+}
+/* On wide screens keep the lists and details in a readable column */
+.pj .proj-view {
+  width: 100%;
+  max-width: 46rem;
+  margin-inline: auto;
+}
+/* No quick tabs on this screen; the Menu button (or Esc) is the way out */
+html[data-pane='projects'] .osd-tabs {
+  display: none;
+}
+
+/* ---------- About: boot sequence, factory output counters ---------- */
+.text-screen {
+  position: relative;
+}
+.boot-log {
+  position: absolute;
+  inset: 0 0 auto 0;
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0.4rem 0 0;
+  list-style: none;
+  font-family: var(--font-display);
+  letter-spacing: 0.08em;
+  color: var(--ph-dim);
+  pointer-events: none;
+}
+.pane.booting .bt:not(.on) {
+  visibility: hidden;
+}
+.pane.booting .model-stage:not(.stamped) canvas {
+  opacity: 0;
+}
+.model-stage.stamped canvas {
+  animation: stamp 0.55s steps(7, end) both;
+}
+@keyframes stamp {
+  0% { opacity: 0; transform: scale(1.22); }
+  30% { opacity: 1; }
+  45% { opacity: 0.25; }
+  60% { opacity: 1; transform: scale(1.04); }
+  100% { opacity: 1; transform: none; }
+}
+.output {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.7rem 0.9rem 0.8rem;
+  border: 2px solid var(--ph-dim);
+  border-radius: 4px;
+  box-shadow: var(--glow-box);
+  background: rgb(0 10 90 / 0.25);
+}
+.output-h {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ph-dim);
+}
+.output-cells {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+.out-cell {
+  display: grid;
+  gap: 0.1rem;
+  justify-items: start;
+  padding: 0.4rem 0.55rem 0.45rem;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  background: transparent;
+  border: 2px solid transparent;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.out-cell:hover,
+.out-cell:focus-visible,
+.out-cell.on {
+  border-color: var(--ph);
+  background: rgb(var(--ph-rgb) / 0.1);
+}
+.out-cell b {
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.out-cell i {
+  font-style: normal;
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ph-dim);
+}
+.odo {
+  display: inline-flex;
+  gap: 2px;
+  font-family: var(--font-display);
+  font-size: 2rem;
+  line-height: 1;
+  text-shadow: var(--glow-text);
+}
+.reel {
+  display: block;
+  height: 1em;
+  width: 0.62em;
+  overflow: hidden;
+  background: rgb(0 0 0 / 0.35);
+  border-radius: 2px;
+}
+.strip {
+  display: block;
+  white-space: pre;
+  text-align: center;
+  line-height: 1;
+  --d: 0;
+  transform: translateY(calc(var(--d) * -1em));
+  transition: transform 0.9s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+@media not all and (min-width: 1000px) and (min-height: 560px) and (pointer: fine) {
+  /* About fits one phone screen: logo on top, short text, the three counters in a row. No scrolling. */
+  .pane[data-pane='about'] .model-stage {
+    height: clamp(8.5rem, 26dvh, 15rem);
+    min-height: 0;
+  }
+  .pane[data-pane='about'] .split {
+    gap: 0.7rem;
+  }
+  .pane[data-pane='about'] .text-screen {
+    order: -1;
+    gap: 0.55rem;
+    font-size: 0.92em;
+  }
+  .pane[data-pane='about'] .text-screen .lede {
+    font-size: 1.05em;
+  }
+  .pane[data-pane='about'] .text-screen h1 {
+    font-size: clamp(1.4rem, 7vw, 2.2rem);
+  }
+  .desk-only {
+    display: none;
+  }
+  .output {
+    order: 1;
+    padding: 0.5rem 0.6rem 0.6rem;
+    gap: 0.35rem;
+  }
+  .output-cells {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.3rem;
+  }
+  .out-cell {
+    padding: 0.3rem 0.35rem 0.35rem;
+  }
+  .out-cell .odo {
+    font-size: 1.6rem;
+  }
+  .out-cell b {
+    font-size: 0.6rem;
+    letter-spacing: 0.06em;
+  }
+  .out-cell i {
+    font-size: 0.55rem;
+  }
+}
+
+/* ---------- Site intro: concept -> in production -> shipped ---------- */
+.intro-screen {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+  overflow: hidden;
+  font-family: var(--font-display);
+}
+html.intro .intro-screen,
+html.intro-hold .intro-screen {
+  display: block;
+}
+html.intro .bezel,
+html.intro .monitor,
+html.intro .crt {
+  visibility: hidden;
+}
+html.intro-hold .monitor main,
+html.intro-hold .monitor .osd {
+  visibility: hidden;
+}
+.monitor.thud {
+  animation: thud 0.22s steps(4, end);
+}
+@keyframes thud {
+  0% { transform: translateY(0); }
+  30% { transform: translateY(7px); }
+  60% { transform: translateY(-3px); }
+  100% { transform: none; }
+}
+.intro-bg {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+.intro-screen[data-act='1'] .bg1,
+.intro-screen[data-act='2'] .bg2 {
+  opacity: 1;
+}
+.intro-gl,
+.intro-static {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  transition: opacity 0.5s;
+}
+.intro-static {
+  pointer-events: none;
+}
+.intro-screen.out .intro-gl {
+  opacity: 0;
+}
+/* Act 1: white drafting paper with a blue grid */
+.bg1 {
+  background:
+    linear-gradient(rgb(31 61 255 / 0.22) 1px, transparent 1px) 0 0 / 120px 120px,
+    linear-gradient(90deg, rgb(31 61 255 / 0.22) 1px, transparent 1px) 0 0 / 120px 120px,
+    linear-gradient(rgb(31 61 255 / 0.09) 1px, transparent 1px) 0 0 / 24px 24px,
+    linear-gradient(90deg, rgb(31 61 255 / 0.09) 1px, transparent 1px) 0 0 / 24px 24px,
+    #fbfcff;
+}
+.blue-title {
+  position: absolute;
+  right: 1.4rem;
+  bottom: 1.4rem;
+  display: grid;
+  gap: 0.1rem;
+  padding: 0.5rem 0.8rem;
+  border: 2px solid #1f3dff;
+  color: #1f3dff;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-align: right;
+}
+.blue-title b {
+  font-size: 1.1rem;
+}
+.blue-title i {
+  font-style: normal;
+  font-size: 0.8rem;
+}
+/* Act 2: dark factory floor, flashing red lights, caution tape */
+.bg2 {
+  background: radial-gradient(ellipse at 50% 55%, #3b3b3b 0%, #151515 75%);
+}
+.beacon {
+  position: absolute;
+  top: 1.2rem;
+  width: 5.5rem;
+  height: 5.5rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ff8a80 0 14%, #ff1a1a 30%, rgb(255 26 26 / 0) 70%);
+  animation: beacon 0.83s steps(1, end) infinite;
+}
+.beacon.l {
+  left: 1.2rem;
+}
+.beacon.r {
+  right: 1.2rem;
+  animation-delay: 0.415s;
+}
+@keyframes beacon {
+  0% { opacity: 1; }
+  50% { opacity: 0.12; }
+}
+.redwash {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 50%, rgb(255 20 20 / 0.28), rgb(255 20 20 / 0.5));
+  mix-blend-mode: screen;
+  animation: beacon 0.83s steps(1, end) infinite;
+}
+.tape {
+  position: absolute;
+  left: -10%;
+  width: 120%;
+  height: 4.4rem;
+  background: repeating-linear-gradient(-45deg, #ffd400 0 30px, #111 30px 60px);
+  background-size: 85px 85px;
+  border-block: 4px solid #111;
+  box-shadow: 0 6px 16px rgb(0 0 0 / 0.6);
+  animation: tape 6s linear infinite;
+}
+.tape.a {
+  top: 18%;
+  transform: rotate(-4deg);
+}
+.tape.b {
+  bottom: 16%;
+  transform: rotate(3deg);
+  animation-direction: reverse;
+}
+@keyframes tape {
+  to { background-position: 85px 0; }
+}
+.intro-cap {
+  position: absolute;
+  left: 50%;
+  bottom: 9%;
+  margin: 0;
+  transform: translateX(-50%);
+  font-size: clamp(1.1rem, 3vw, 1.7rem);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.intro-screen[data-act='1'] .intro-cap {
+  left: 1.4rem;
+  bottom: 1.4rem;
+  transform: none;
+  color: #1f3dff;
+}
+.intro-screen[data-act='2'] .intro-cap {
+  padding: 0.25rem 0.9rem;
+  color: #111;
+  background: #ffd400;
+  border: 3px solid #111;
+}
+.intro-screen[data-act='3'] .intro-cap {
+  color: var(--ph);
+  text-shadow: var(--glow-text);
+}
+.intro-skip {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 2;
+  padding: 0.35rem 0.8rem;
+  font: inherit;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #fff;
+  background: rgb(0 0 0 / 0.55);
+  border: 2px solid currentColor;
+  cursor: pointer;
+}
+.intro-screen[data-act='1'] .intro-skip {
+  color: #1f3dff;
+  background: #fff;
+}
+.intro-screen[data-act='3'] .intro-skip {
+  display: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .intro-screen {
+    display: none !important;
+  }
+}
+@media (max-width: 700px) {
+  .blue-title {
+    bottom: 3.6rem;
+  }
+}
+
+/* ---------- About never scrolls: the logo stage soaks up whatever height is left ---------- */
+.pane[data-pane='about'] {
+  overflow-y: hidden;
+}
+@media (min-width: 1000px) and (min-height: 560px) and (pointer: fine) {
+  .pane[data-pane='about'] .split {
+    height: 100%;
+    min-height: 0;
+    align-content: stretch;
+  }
+  .pane[data-pane='about'] .side {
+    grid-template-rows: minmax(0, 1fr) auto;
+    height: 100%;
+    min-height: 0;
+  }
+  .pane[data-pane='about'] .model-stage {
+    aspect-ratio: auto;
+    height: 100%;
+    min-height: 0;
+  }
+}
+@media (min-width: 1000px) and (min-height: 560px) and (pointer: fine) and (max-height: 720px) {
+  .pane[data-pane='about'] .text-screen {
+    gap: 0.6rem;
+    font-size: 0.88em;
+  }
+  .pane[data-pane='about'] .text-screen h1 {
+    font-size: clamp(1.5rem, 3.2vw, 2.2rem);
+  }
+  .pane[data-pane='about'] .out-cell .odo {
+    font-size: 1.6rem;
+  }
+  .pane[data-pane='about'] .desk-only {
+    display: none;
+  }
+}
+@media not all and (min-width: 1000px) and (min-height: 560px) and (pointer: fine) {
+  .pane[data-pane='about'] {
+    padding-bottom: 2.1rem;
+  }
+  .pane[data-pane='about'] .split {
+    flex: 1 1 0;
+    min-height: 0;
+  }
+  .pane[data-pane='about'] .model-stage {
+    flex: 1 1 8rem;
+    height: auto;
+    min-height: 6rem;
+    max-height: 30rem;
+  }
+  .pane[data-pane='about'] .text-screen,
+  .pane[data-pane='about'] .output {
+    flex: 0 0 auto;
+  }
+}
+@media not all and (min-width: 1000px) and (min-height: 560px) and (pointer: fine) and (max-height: 760px) {
+  .pane[data-pane='about'] .text-screen {
+    gap: 0.4rem;
+    font-size: 0.84em;
+  }
+  .pane[data-pane='about'] .text-screen .prompt {
+    display: none;
+  }
+  .pane[data-pane='about'] .output-h {
+    display: none;
+  }
+  .pane[data-pane='about'] .out-cell .odo {
+    font-size: 1.35rem;
+  }
+}
+
+/* Reboot: replays the About intro */
+.reboot {
+  position: absolute;
+  top: 0.4rem;
+  right: var(--gutter);
+  z-index: 3;
+}
+@media not all and (min-width: 1000px) and (min-height: 560px) and (pointer: fine) {
+  .pane[data-pane='about'] .ms-hint {
+    top: auto;
+    bottom: 0.7rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reboot {
+    display: none;
+  }
+}
+
+/* About: the logo floats on the screen, no frame */
+.pane[data-pane='about'] .model-stage {
+  background: none;
+  border: 0;
+  box-shadow: none;
+}
+.model-stage.landed canvas {
+  animation: none;
+}
+.intro-screen.flying .intro-cap {
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+/* About: soft glow behind the logo plus a cast shadow */
+.pane[data-pane='about'] .model-stage::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 90%;
+  height: 90%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    ellipse at center,
+    rgb(200 225 255 / 0.8) 0%,
+    rgb(120 160 255 / 0.42) 30%,
+    rgb(70 100 255 / 0.16) 55%,
+    transparent 72%
+  );
+  filter: blur(6px);
+  pointer-events: none;
+  animation: logo-glow 4.5s ease-in-out infinite;
+}
+.pane[data-pane='about'] .model-stage canvas {
+  filter: drop-shadow(0.5rem 0.8rem 0.45rem rgb(0 0 30 / 0.9));
+}
+@keyframes logo-glow {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pane[data-pane='about'] .model-stage::before { animation: none; }
 }

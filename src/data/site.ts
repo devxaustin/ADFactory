@@ -1,12 +1,12 @@
 // Everything you'd want to edit on the About, Contact, and Media screens lives here.
 // Projects live in src/content/projects (one markdown file each).
 
-export type ModelKind = 'gear' | 'phone' | 'cartridge' | 'tv' | 'controller' | 'ipod';
+export type ModelKind = 'gear' | 'logo' | 'phone' | 'cartridge' | 'tv' | 'controller' | 'ipod';
 
 // Home menu (desktop): the 3D object that floats on the screen while each line is highlighted.
 // Stand-in kinds: gear, phone, cartridge, tv. For your own, drop a .glb in public/models/ and set `file`.
 export const menuModels: Record<'about' | 'projects' | 'media' | 'contact', { kind: ModelKind; file?: string; rotate?: [number, number, number]; tint?: string; textures?: string }> = {
-  about: { kind: 'gear' },
+  about: { kind: 'logo' },
   projects: { kind: 'cartridge', file: 'cd.fbx', rotate: [-70, 0, 0], textures: 'cd-textures' },
   // rotate = degrees [x, y, z] to turn a model that loads sideways or upside down. textures = a folder under public/models/ holding base.jpg, emissive.jpg, normal.jpg, orm.jpg for a model that came without textures.
   // (tint: '#rrggbb' is a plain-color fallback for the same case.)
@@ -59,14 +59,9 @@ export const site = {
       'This site works like a factory floor. Early ideas show up as prototypes, things I am actively building sit in production, and finished work ships.',
       'Press Esc or the Menu button to get back to the main menu.',
     ],
-    spec: [
-      ['Makes', 'Software, games, art, music'],
-      ['Aiming for', 'IT roles'],
-      ['Status', 'Building'],
-    ] as [string, string][],
     // The 3D object beside the About text. `kind` picks the built-in stand-in ('gear' or 'phone').
     // To use your own model, drop a .glb in public/models/ and set `file: 'yourmodel.glb'`.
-    model: { kind: 'gear' as ModelKind, tag: 'Specimen 01', label: 'Drive gears', file: undefined as string | undefined },
+    model: { kind: 'logo' as ModelKind, tag: 'Specimen 01', label: 'AD monogram', file: undefined as string | undefined },
   },
 
   contact: {
