@@ -1,0 +1,53 @@
+{
+  "pillowVersion": "13.0.0",
+  "method": "Python/Pillow procedural direction studies; not game screenshots, generative-service outputs or production assets.",
+  "processingChecks": [
+    "RGBA creation",
+    "alpha-bound crop",
+    "nearest-neighbor resize",
+    "sheet assembly",
+    "palette quantization",
+    "PNG round trip"
+  ],
+  "concepts": [
+    {
+      "file": "direction-a.png",
+      "title": "Sunlit storybook coast",
+      "studyNativeSize": [
+        320,
+        180
+      ],
+      "presentationSize": [
+        960,
+        540
+      ],
+      "sha256": "4b0b94db80f5449747ccff657df850a2dc240b67ba0d1fa484f2000018861035"
+    },
+    {
+      "file": "direction-b.png",
+      "title": "Lush adventure diorama",
+      "studyNativeSize": [
+        480,
+        270
+      ],
+      "presentationSize": [
+        960,
+        540
+      ],
+      "sha256": "fea8e3809a7bd1c1d92b1a3b2af014e66ebf3160ba9ee224a3de0872eb51e4d7"
+    },
+    {
+      "file": "direction-c.png",
+      "title": "Graphic island folklore",
+      "studyNativeSize": [
+        320,
+        180
+      ],
+      "presentationSize": [
+        960,
+        540
+      ],
+      "sha256": "967f7b8744ab42aa6fc66bfc23938970d63e699e2e58f6aadbd71696e4993af8"
+    }
+  ]
+}
