@@ -1,0 +1,48 @@
+name: Monkey Island PR validation
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: monkey-island-validation-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Game regression tests and portfolio build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            games/monkey-island/package-lock.json
+      - name: Install portfolio dependencies
+        run: npm ci
+      - name: Install game and test dependencies
+        run: npm ci --prefix games/monkey-island
+      - name: Install Chromium and system libraries
+        working-directory: games/monkey-island
+        run: npx playwright install --with-deps --no-shell chromium
+      - name: Run game regression tests
+        run: npm test --prefix games/monkey-island
+      - name: Build game and portfolio
+        run: npm run build
+      - name: Preserve test report and failure evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: monkey-island-test-report
+          path: |
+            games/monkey-island/playwright-report/
+            games/monkey-island/test-results/
+          if-no-files-found: ignore
+          retention-days: 7

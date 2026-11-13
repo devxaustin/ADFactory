@@ -1,0 +1,112 @@
+{
+  "sourceCommit": "a4aa13e250dfbc9d08b93a9d0a95fef1b4e3719a",
+  "capturedAt": "2026-11-13T20:11:08.898Z",
+  "browser": "158.0.8127.18",
+  "renderer": "Canvas",
+  "logicalResolution": {
+    "width": 480,
+    "height": 270
+  },
+  "method": "Real Phaser renderer in Playwright Chromium; debug-staged scenes. Human comparison references, not pixel-perfect regression expectations.",
+  "captures": [
+    {
+      "file": "screenshots/title.png",
+      "sha256": "b2bf825560b1f57996997408660f5d249375131181aa9a73b278c6ca655faee5",
+      "viewport": {
+        "width": 960,
+        "height": 540
+      },
+      "note": "Title screen, CRT off."
+    },
+    {
+      "file": "screenshots/beach.png",
+      "sha256": "3da42625e68c660d680fd09591c7eff068de3f5ec323ba7df1882e0ab6dc7616",
+      "viewport": {
+        "width": 960,
+        "height": 540
+      },
+      "note": "Pristine location staged by debug scene restart; no quest completion implied. CRT off."
+    },
+    {
+      "file": "screenshots/jungle.png",
+      "sha256": "d4dd7b24bb4d39128e9624a4f0d8865595d051bd38a80eeae5a26667a52ab354",
+      "viewport": {
+        "width": 960,
+        "height": 540
+      },
+      "note": "Pristine location staged by debug scene restart; no quest completion implied. CRT off."
+    },
+    {
+      "file": "screenshots/village.png",
+      "sha256": "4c6fdb58c2ad9b437d891a0a704d3447b786eabccbe8064883e05b93c9ab9146",
+      "viewport": {
+        "width": 960,
+        "height": 540
+      },
+      "note": "Pristine location staged by debug scene restart; no quest completion implied. CRT off."
+    },
+    {
+      "file": "screenshots/volcano.png",
+      "sha256": "8cd803fea93046741e6e986ddc6b0d2b11855087ca1f6bf9f2d264526c4705c4",
+      "viewport": {
+        "width": 960,
+        "height": 540
+      },
+      "note": "Pristine location staged by debug scene restart; no quest completion implied. CRT off."
+    },
+    {
+      "file": "screenshots/dock.png",
+      "sha256": "d46ebcf2816a9554401b048b722c335f394634c10018c5b972ae7eca85a205f0",
+      "viewport": {
+        "width": 960,
+        "height": 540
+      },
+      "note": "Pristine location staged by debug scene restart; no quest completion implied. CRT off."
+    },
+    {
+      "file": "screenshots/beach-crt.png",
+      "sha256": "1bf460a0209cb080ce18e4e7a6da7d5a484f84e37fea9b3c8d1356a0a7535d44",
+      "viewport": {
+        "width": 960,
+        "height": 540
+      },
+      "note": "Same beach with the existing CRT effect enabled."
+    },
+    {
+      "file": "screenshots/portrait.png",
+      "sha256": "4df14c2bbd90b4276a93bbd1588debaff95ed12e18d197f669b3ed8111c59e86",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "note": "Portrait canvas-fit reference only; does not establish touch playability."
+    },
+    {
+      "file": "screenshots/mg-dodge.png",
+      "sha256": "4be383ad1e45114c1f36a4bda878033f24fdf6af42d03c46e353fc3a73bcf7e9",
+      "viewport": {
+        "width": 960,
+        "height": 540
+      },
+      "note": "Real encounter introduction launched through its trade; inventory seeded for staging. CRT off."
+    },
+    {
+      "file": "screenshots/mg-catch.png",
+      "sha256": "4eb6ae6d9d77ac5d51202268b0c4dcefd4c3fd29082281f302f74f5fd594427b",
+      "viewport": {
+        "width": 960,
+        "height": 540
+      },
+      "note": "Real encounter introduction launched through its trade; inventory seeded for staging. CRT off."
+    },
+    {
+      "file": "screenshots/ending.png",
+      "sha256": "12e63fffd1377af19190e3c6e47faa0d60e29c8b7f7d65fddee88330c897f3a3",
+      "viewport": {
+        "width": 960,
+        "height": 540
+      },
+      "note": "Ending staged directly, not evidence of an unaided completed playthrough. CRT off."
+    }
+  ]
+}
