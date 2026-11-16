@@ -83,8 +83,13 @@ export class CatchScene extends MinigameScene {
     this.elapsed += dt;
     this.timeLeft -= dt;
 
-    const dx = this.dir().x;
-    this.basket.x = Phaser.Math.Clamp(this.basket.x + dx * BASKET_SPEED * dt, BASKET_W / 2, GAME_W - BASKET_W / 2);
+    // This arena is horizontal-only: vertical keys must not reduce basket speed.
+    const dx = Math.sign(this.dir().x);
+    const previousBasketX = this.basket.x;
+    const basketAt = (t: number): number => Phaser.Math.Clamp(
+      previousBasketX + dx * BASKET_SPEED * dt * t, BASKET_W / 2, GAME_W - BASKET_W / 2,
+    );
+    this.basket.x = basketAt(1);
 
     this.spawnIn -= dt;
     if (this.spawnIn <= 0) {
@@ -93,9 +98,19 @@ export class CatchScene extends MinigameScene {
     }
 
     for (const it of [...this.items]) {
+      const previousY = it.obj.y;
       it.obj.y += it.vy * dt;
-      const inX = Math.abs(it.obj.x - this.basket.x) < BASKET_W / 2 + 3;
-      const inY = it.obj.y > BASKET_Y - 10 && it.obj.y < BASKET_Y + 6;
+      // Find the part of this frame during which the falling item crosses the
+      // original open catch band. Sample basket motion over that same interval,
+      // not only at the final position; clamp at edges at the correct instant.
+      const dy = it.obj.y - previousY;
+      const enter = dy > 0 ? Math.max(0, (BASKET_Y - 10 - previousY) / dy) : 0;
+      const leave = dy > 0 ? Math.min(1, (BASKET_Y + 6 - previousY) / dy) : 1;
+      const inY = dy > 0 ? enter < leave : previousY > BASKET_Y - 10 && previousY < BASKET_Y + 6;
+      const xAtEnter = it.obj.x - basketAt(enter);
+      const xAtLeave = it.obj.x - basketAt(leave);
+      const halfWidth = BASKET_W / 2 + 3;
+      const inX = Math.min(xAtEnter, xAtLeave) < halfWidth && Math.max(xAtEnter, xAtLeave) > -halfWidth;
       if (inX && inY) {
         this.items = this.items.filter((x) => x !== it);
         it.obj.destroy();
