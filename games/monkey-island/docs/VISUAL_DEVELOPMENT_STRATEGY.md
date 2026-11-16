@@ -49,13 +49,19 @@ Proposed experiment: deliberately compact characters and stylized scenery shapes
 
 These are starting points, not a forced selection. The owner may combine B's shoreline detail with A's warmth, request a fourth direction, or reject all three. No palette, frame dimensions, outline rules, lighting system, camera scale or UI treatment is locked yet.
 
+## Current Direction B review package
+
+**B is the preferred exploration, not final approval.** Start with the [Direction B brief](visual/direction-b/README.md), [three sequential ChatGPT prompts](visual/direction-b/CHATGPT_PROMPTS.md), [local asset pipeline and approval gates](visual/direction-b/ASSET_PIPELINE.md), and [first handoff](visual/direction-b/HANDOFF.md). Images for that package have not yet been generated; no finished game assets exist. Existing procedural comparison studies remain historical discussion aids, not polished previews or production references. Formats, resolution and sprite dimensions stay tentative until proof.
+
+**The earlier Higgsfield/paid-service route is superseded and must not be used.** No subscriptions, paid APIs, premium generation recommendations or payment are part of this workflow. The user operates ChatGPT's image tool; Hermes has no direct access and must not claim to have generated images. All runtime source/assets stay unchanged until explicit approval of the relevant production/integration step.
+
 ## Verified creation tools and limits
 
 | Capability | Verification / current status | Limitations |
 |---|---|---|
 | Local procedural image creation | Python + Pillow produced the included concept PNGs and preview board | Code-authored studies are not a substitute for polished illustrated concept art |
 | PNG processing | Local smoke checks exercise RGBA creation, nearest-neighbor resizing, cropping, palette quantization and sheet assembly | Automated operations do not guarantee consistent anatomy, clean animation or attractive art; visual review remains necessary |
-| Generative image service | Higgsfield `GENERATE_IMAGE` tool was discovered and its schema inspected; a `gpt_image_2` cost-preflight request returned CONNECTION_REQUIRED; connection attempt remained not_connected | No successful generation, editing, pricing or model output has been verified. Owner connection/authorization and a fresh cost check are needed before using it. Do not claim working access or spend credits silently |
+| Concept image creation (current route) | Hermes drafts briefs/prompts; the user operates ChatGPT and returns approved original exports | No direct ChatGPT image-tool access is claimed for Hermes. No package images have yet been generated. Generation does not guarantee usable alpha, tileability, anatomy, animation or production resolution |
 | Browser inspection / integration engineering | Existing real Phaser renderer, loaders, physics and debug-backed tests have been exercised | New art integration has NOT happened. Tests currently force encounter outcomes and do not certify art/collision correctness, visual quality or performance |
 | Animation and 3D generation | No specialized rigging, character-consistent animation generator or 3D-model generator has been verified | Static concept tools must not be advertised as reliable frame-perfect spritesheet/rigged-model production. Custom frame work or additional tools may be required |
 
@@ -64,19 +70,19 @@ Do not upload private research, credentials or unrelated user assets to an image
 ## Conversational art-production workflow
 
 1. **Brief:** translate the owner's request into a specific visual change, region, mood, character traits and retained gameplay behaviors. Identify references the owner has rights to use.
-2. **Explore:** produce distinct concept views and character silhouettes. Label each preview by method and maturity. Keep alternatives under versioned review paths, outside runtime `public/`.
+2. **Explore:** Hermes drafts detailed prompts; the user generates Beach, player design sheet and then a combined gameplay-scale scene in ChatGPT, sequentially using approved prior original exports. The user returns originals and approval notes. Hermes evaluates them; revise before moving on when necessary. Label method/maturity and retain versions outside runtime `public/`. A design sheet is not a production spritesheet.
 3. **Owner chooses:** approve a direction or request revision. Record what is actually approved and what remains open. No production asset replacement yet.
 4. **Technical proof:** test candidate character proportions, camera, shoreline layering, UI scale and feet/collision anchors in an isolated development branch. Agree measurable export needs only after this proof.
 5. **Asset specification:** choose PNG/atlas/spritesheet structure, native dimensions, palettes, alpha handling, naming and animation frame contracts for the selected direction. Version these contracts; they serve the art, not the old placeholders.
-6. **Generate or draw, then edit:** use available authorized tools, inspect outputs, repair edges/alpha, produce consistent frames and organize source versus runtime exports. Ask before costs or new services are required. Retain a provenance manifest (brief, tool/model if used, source refs, edits, status and export details).
-7. **Validate assets:** check file loading, dimensions, alpha, frame boundaries, tiling/seams, consistent scale/light/outline vocabulary, item readability and animation continuity. Do not mistake a concept sheet for an import-ready tileset.
+6. **Prepare locally after approval:** use free/local editing to inspect user-returned originals, repair edges/alpha, author consistent animation frames and organize source versus candidate exports. Do not recommend paid tools/services or treat static concept poses as finished animation. Retain a provenance manifest (brief, tool/model if known, approved refs, edits, status and actual export details).
+7. **Validate assets:** check file loading, dimensions, alpha, frame boundaries, tiling/seams, consistent scale/light/outline vocabulary, item readability and animation continuity. Do not mistake a concept sheet for an import-ready tileset. Obtain owner approval of real candidate production exports and explicit integration permission before replacing assets or restructuring rendering.
 8. **Integrate carefully:** update loader/atlas mappings, origins, movement animations, feet bodies, depth ordering, interaction anchors, HUD and camera as needed. Reuse stable item/trade/flag logic. Keep collision data explicit rather than deriving it blindly from opaque pixels.
 9. **Review in game:** automated state/build tests plus actual traversal, both encounters, occlusion, exits, CRT choice, WebGL/Canvas and target-device checks. Compare the baseline for functionality, not artistic similarity.
 10. **Reviewed PR:** show before/after evidence and remaining limits. Owner approves major art decisions and merge/publication separately. No automatic merge or deploy.
 
 ## First decisions requested
 
-- Which direction, combination or alternative should receive a refined concept pass?
+- B is the preferred next exploration. Review the first Beach request in the [handoff](visual/direction-b/HANDOFF.md); final direction approval remains open.
 - What player personality/proportions best fit it? The current castaway is not the default final design.
 - How dense and detailed should environments feel relative to navigation readability?
 - Does the chosen look retain CRT as an optional presentation, reinterpret it, or leave it out of the game?
