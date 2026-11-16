@@ -96,6 +96,10 @@ Proposed sequence after authorization: preserve a reversible baseline → isolat
 
 Keep inventory/trade/flag/state logic stable. Choose per-item visual identity instead of depending on tint alone; test WebGL **and** Canvas because Phaser.AUTO may fall back. Verify CRT-on/off if retained. New assets/metadata must not collide with generated texture keys. Keep loading failures visible and runtime URLs case-correct. Do not migrate to another renderer or introduce a new asset/map dependency merely because the concept is detailed.
 
+## Beach-first milestone order
+
+The next playable milestone is the Beach environment, not a mandatory completed player redesign. After G1, obtain explicit permission for a Beach-only technical/asset proof and integration scope using the existing temporary player. Assess the returned image for layer separation, walkable routes, pickups, the choppable tree and shoreline treatment first; do not slice and import the concept wholesale. The player-reference and combined-image gates below apply when redesigning/replacing the player, which follows the playable Beach milestone. Expand to the other four locations only after the approved look and Beach behavior hold up in game. All production/integration approval requirements remain in force.
+
 ## 7. Acceptance gates and evidence
 
 No gates below have been passed by this package. Record owner decisions and real evidence at each gate; do not let success at one imply success at the next.
