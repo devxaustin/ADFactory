@@ -25,7 +25,7 @@ The existing screenshots are records of behavior and starting appearance, **not 
 
 Relevant code: `src/config.ts`, `src/main.ts`, `src/scenes/BootScene.ts`, `LocationScene.ts`, `HudScene.ts`, `TitleScene.ts`, `EndScene.ts`, and both minigame scenes. The existing tileset guide is planning material, not an implemented Tiled pipeline.
 
-## Three distinct directions for review
+## Initial direction studies (historical)
 
 Open [the comparison board](concepts/index.html). The included PNGs are **original procedural direction studies**, not AI-service outputs, production assets, game screenshots, or a promise of final illustration quality. They deliberately vary scene density, silhouettes, character scale and UI posture. They help compare taste; generative/model-assisted concept refinement remains a separate step.
 
@@ -51,7 +51,7 @@ These are starting points, not a forced selection. The owner may combine B's sho
 
 ## Current Direction B review package
 
-**B is the preferred exploration, not final approval.** Start with the [Direction B brief](visual/direction-b/README.md), [three sequential ChatGPT prompts](visual/direction-b/CHATGPT_PROMPTS.md), [local asset pipeline and approval gates](visual/direction-b/ASSET_PIPELINE.md), and [first handoff](visual/direction-b/HANDOFF.md). Images for that package have not yet been generated; no finished game assets exist. Existing procedural comparison studies remain historical discussion aids, not polished previews or production references. Formats, resolution and sprite dimensions stay tentative until proof.
+**Direction B is now refined toward the user-selected 16-Bit Tropical Adventure reference:** chunky polished pixel clusters, vibrant tropical colors, limited shade ramps, simple pixel shadows and modular tiles/props. See the [reference review](visual/direction-b/REFERENCE_REVIEW.md). Final production specifications and runtime integration remain unapproved. Start with the [Direction B brief](visual/direction-b/README.md), [three sequential ChatGPT prompts](visual/direction-b/CHATGPT_PROMPTS.md), [local asset pipeline and approval gates](visual/direction-b/ASSET_PIPELINE.md), and [first handoff](visual/direction-b/HANDOFF.md). The user has supplied the preferred Beach concept; no finished game assets exist. Existing procedural comparison studies remain historical discussion aids, not polished previews or production references. Formats, resolution and sprite dimensions stay tentative until proof.
 
 **The earlier Higgsfield/paid-service route is superseded and must not be used.** No subscriptions, paid APIs, premium generation recommendations or payment are part of this workflow. The user operates ChatGPT's image tool; Hermes has no direct access and must not claim to have generated images. All runtime source/assets stay unchanged until explicit approval of the relevant production/integration step.
 

@@ -1,6 +1,6 @@
 # Asset pipeline — Direction B (proposal, not executed)
 
-**Images have not yet been generated for this package. No finished game assets, animation or integrated art are delivered.** All formats, dimensions, frame counts, grid sizes, filtering and camera choices below are tentative until proof. The current deliverable is documentation only: no runtime source/assets or rendering structure changes are authorized.
+**A preferred user-supplied Beach reference is now available for review; see [REFERENCE_REVIEW.md](REFERENCE_REVIEW.md). No finished game assets, animation or integrated art are delivered.** All formats, dimensions, frame counts, grid sizes, filtering and camera choices below are tentative until proof. The current deliverable is documentation only: no runtime source/assets or rendering structure changes are authorized.
 
 The user operates ChatGPT; Hermes briefs, evaluates returned original exports and prepares approved work locally. No payment, subscription, paid API, external generation service or premium tooling is required or recommended. Local software examples below are free options, not installed/verified dependencies or a requirement to install them. If unavailable, use an already available free equivalent or discuss the blocker rather than substituting a paid route.
 

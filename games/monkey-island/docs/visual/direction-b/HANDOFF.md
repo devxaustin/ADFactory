@@ -1,20 +1,21 @@
-# First handoff — Beach only
+# Reference received — next Beach handoff
 
-**Status:** Direction B is preferred exploration, not final approval. Images for this package have not yet been generated; no finished game assets exist. Runtime source/assets remain unchanged. Export formats and resolutions are tentative until proof.
+The user supplied a preferred **16-Bit Tropical Adventure** Beach image and detailed style notes. [REFERENCE_REVIEW.md](REFERENCE_REVIEW.md) records the inspected source and feasibility findings. The original image remains local; it is not copied into the public repository here. No finished game assets or runtime replacements exist.
 
-## Exact first image request
+## Current direction
 
-Open ChatGPT's image tool yourself and copy the **entire fenced block under “Prompt 1 — Beach environment only (first request)”** in [CHATGPT_PROMPTS.md](CHATGPT_PROMPTS.md). Send that as a single request, text only, with no reference attachments on this first pass.
+Use chunky, polished classic top-down RPG pixels, warm golden/peach sand, turquoise/deep-blue water, varied greens and restrained red flowers, neutral gray/lavender rocks, clean silhouettes, limited shade ramps and crisp pixel shadows. Avoid the older extremely detailed/painterly emphasis. All future characters and areas should share this treatment while remaining original.
 
-Request **one original opaque landscape Beach concept**, not a player, spritesheet, tileset or gameplay screenshot. It must show top/north water, clear sand traversal, an open east/right Jungle route, two rocks, the rusty axe and cheesesteak as separate pickups, and an approachable choppable palm. No new gameplay props/areas, raft site, UI or franchise imitation. The prompt contains the full perspective, lighting, material and negative constraints; do not replace it with this summary. Prefer PNG, 16:9 if supported; 1536×864 is a review suggestion, not a requirement or game-resolution commitment.
+## Next approval boundary
 
-Hermes provides the prompt, **not direct image generation**. No other generation service, subscription, payment or API is part of this workflow.
+Do not request another unrelated full Beach painting or import the flattened reference as a finished level. First agree a small modular asset kit and the scope of the playable Beach proof. Native grid, export dimensions, collision boundaries and implementation details are not approved merely by preferring the reference.
 
-## Return to Hermes
+The first kit should cover sand, water/shore transitions, rocks, limited decorative vegetation/palm variations, separate axe and cheesesteak, and a choppable palm with a stump. Keep the east Jungle opening explicit and test scale using the temporary player. The player redesign follows the playable Beach milestone.
 
-1. The **downloaded original export file** at its actual resolution, not a screenshot/thumbnail or resized copy. Suggested filename: `beach-b-concept-v01-original.png`; keep the real extension if it is another format.
-2. The exact prompt you used and any changes you made; note whether you attached anything. Tool/model/version if visible, otherwise “unknown.” Actual file dimensions/format if available; Hermes can inspect them if not.
-3. Your decision: **approve as reference / revise / reject**. Name the file/revision and specify which aspects you approve—mood, palette, density, perspective, layout—and which remain open. For example: “Approve lighting and shoreline; revise dense east edge; no layout or production approval yet.”
-4. Two or three specific observations: can you find both pickups, read the east route and imagine walking to the palm? Does it feel richly illustrated without becoming noisy? You do not need to approve anything just because it was generated.
+## ChatGPT requests and returned files
 
-Hermes then reviews the actual export against the [brief](README.md), flags technical risks and drafts targeted corrections if needed. **Do not request all three images yet.** Once the Beach concept is approved, Hermes first evaluates layer separation, playable routes, asset needs and a scoped production plan. The next playable milestone is a Beach-only proof using the temporary player, after explicit asset/integration approval. Redesign the player afterward: use Prompt 2 with the approved Beach export, then Prompt 3 once the player reference is also approved. Local sprite/tile/animation production and runtime integration each require later explicit approval under [ASSET_PIPELINE.md](ASSET_PIPELINE.md). No finished animation, transparency, tileability or working integration is implied by a concept approval.
+When asset production or a focused reference revision is approved, attach the original Beach image and identify it as the style/color/perspective reference. Request original components rather than treating its baked scenery, shadows and ground as separable exports. The existing [prompt pack](CHATGPT_PROMPTS.md) remains useful for concept/player/combined reviews, but its initial Beach request is now historical rather than an instruction to restart concept generation.
+
+Return downloaded original image exports, the actual prompt/reference information, and per-file approve/revise/reject notes. No screenshots or thumbnails as production sources. Alpha, tileability, animation continuity and frame geometry must be checked locally; generated sheets and concept poses are not automatically game-ready.
+
+Hermes supplies prompts and technical preparation; the user operates ChatGPT. No additional paid generation service is part of the workflow. Production assets, runtime integration, merge and publication each retain their explicit approval boundary; see [ASSET_PIPELINE.md](ASSET_PIPELINE.md).
