@@ -1,0 +1,561 @@
+{
+  "reviewStatus": "AWAITING_SAMPLE_APPROVAL",
+  "runtimeIntegrated": false,
+  "logicalSize": [
+    480,
+    270
+  ],
+  "tileSize": [
+    16,
+    16
+  ],
+  "palette": [
+    "#082F35",
+    "#14524A",
+    "#1B6B45",
+    "#2F8A45",
+    "#5BAA36",
+    "#96CB2E",
+    "#CFDB47",
+    "#C18A52",
+    "#D9A25F",
+    "#EDBA77",
+    "#F5CF8C",
+    "#FFE0A0",
+    "#005483",
+    "#007CAE",
+    "#069EC4",
+    "#1AC5D4",
+    "#61E0D5",
+    "#B3F1DB",
+    "#E5F7DF",
+    "#4E4A60",
+    "#737083",
+    "#A49BA2",
+    "#D5C6B8",
+    "#56352B",
+    "#855032",
+    "#B87542",
+    "#E3A35B",
+    "#9D283A",
+    "#D84A3D",
+    "#FF7855",
+    "#BCCED0",
+    "#ECF3E8"
+  ],
+  "reference": {
+    "sha256": "f80dc18550addd5c7cddb3f83adab994356902e15345d58971c91d04a3ec2e48",
+    "size": [
+      1672,
+      941
+    ],
+    "rawPublished": false
+  },
+  "pillowVersion": "13.0.0",
+  "provenance": "Terrain and small props are original local code-authored studies; palm/rocks are disclosed derivatives of the user-approved reference. Existing player reused only for scale. No image service or AI generation called.",
+  "limitations": [
+    "No Phaser gameplay is running in the mockup",
+    "No gameplay/collision playtest is claimed",
+    "Reference-derived masking/resampling requires visual approval and further pixel cleanup",
+    "One palm type and limited small vegetation are samples, not the full family",
+    "Only representative straight shore/depth transitions supplied; corner kit deferred",
+    "Loop is an exported visual preview, not a runtime animation integration"
+  ],
+  "baselineCollisionRects": [
+    {
+      "kind": "water",
+      "x": 0,
+      "y": 0,
+      "w": 480,
+      "h": 40
+    },
+    {
+      "kind": "rock",
+      "x": 150,
+      "y": 90,
+      "w": 32,
+      "h": 32
+    },
+    {
+      "kind": "rock",
+      "x": 300,
+      "y": 170,
+      "w": 48,
+      "h": 32
+    }
+  ],
+  "baselineInteractions": {
+    "beach-axe": [
+      190,
+      150
+    ],
+    "beach-cheesesteak": [
+      235,
+      115
+    ],
+    "beach-tree": [
+      420,
+      215
+    ]
+  },
+  "eastOpening": {
+    "x": 440,
+    "y": 105,
+    "w": 40,
+    "h": 60
+  },
+  "assets": [
+    {
+      "id": "sand-a",
+      "file": "terrain/sand-a.png",
+      "size": [
+        16,
+        16
+      ],
+      "role": "terrain",
+      "method": "code-authored pixel sample",
+      "sha256": "e840fae41a65dfe3f2f30c780632bd96aa0e8c77e75b81c4ab31b565f7872be6",
+      "repeatX": true,
+      "repeatY": true
+    },
+    {
+      "id": "sand-b",
+      "file": "terrain/sand-b.png",
+      "size": [
+        16,
+        16
+      ],
+      "role": "terrain",
+      "method": "code-authored pixel sample",
+      "sha256": "2739bada95d3851a2324e280f99dcf8352b2d8011cec6ef37b9071ad5abe9c92",
+      "repeatX": true,
+      "repeatY": true
+    },
+    {
+      "id": "sand-c",
+      "file": "terrain/sand-c.png",
+      "size": [
+        16,
+        16
+      ],
+      "role": "terrain",
+      "method": "code-authored pixel sample",
+      "sha256": "eb70a9ad4a400248295d94fae684a155b6fab07409ea74c65b0712fff2f54b19",
+      "repeatX": true,
+      "repeatY": true
+    },
+    {
+      "id": "water-deep-0",
+      "file": "terrain/water-deep-0.png",
+      "size": [
+        16,
+        16
+      ],
+      "role": "terrain",
+      "method": "code-authored pixel sample",
+      "sha256": "3e693d7f581c77d9aff22573d77cdf48590226263c02be66b3e8768cb0b6a119",
+      "animation": "water-deep",
+      "frame": 0,
+      "repeatX": true,
+      "repeatY": true
+    },
+    {
+      "id": "water-deep-1",
+      "file": "terrain/water-deep-1.png",
+      "size": [
+        16,
+        16
+      ],
+      "role": "terrain",
+      "method": "code-authored pixel sample",
+      "sha256": "50ca2101820c5303adddce67bde134b3b3111a5bb34504f11df4aea5ab66db1e",
+      "animation": "water-deep",
+      "frame": 1,
+      "repeatX": true,
+      "repeatY": true
+    },
+    {
+      "id": "water-deep-2",
+      "file": "terrain/water-deep-2.png",
+      "size": [
+        16,
+        16
+      ],
+      "role": "terrain",
+      "method": "code-authored pixel sample",
+      "sha256": "da7c73d59f6406e30fa2f9243e652c4a3fa38a372aa070a6ad580a8f21f04298",
+      "animation": "water-deep",
+      "frame": 2,
+      "repeatX": true,
+      "repeatY": true
+    },
+    {
+      "id": "water-deep-3",
+      "file": "terrain/water-deep-3.png",
+      "size": [
+        16,
+        16
+      ],
+      "role": "terrain",
+      "method": "code-authored pixel sample",
+      "sha256": "580da0230cb4cb7c66354ea4823eb959305e47f93b9d3fae007dee61ecf11393",
+      "animation": "water-deep",
+      "frame": 3,
+      "repeatX": true,
+      "repeatY": true
+    },
+    {
+      "id": "water-shallow-0",
+      "file": "terrain/water-shallow-0.png",
+      "size": [
+        16,
+        16
+      ],
+      "role": "terrain",
+      "method": "code-authored pixel sample",
+      "sha256": "eecc821723835e9c29e4f87efc700d547f2780e115de978814abb9f3d9d0a0bd",
+      "animation": "water-shallow",
+      "frame": 0,
+      "repeatX": true,
+      "repeatY": true
+    },
+    {
+      "id": "water-shallow-1",
+      "file": "terrain/water-shallow-1.png",
+      "size": [
+        16,
+        16
+      ],
+      "role": "terrain",
+      "method": "code-authored pixel sample",
+      "sha256": "cc04c4e98a1cb11d4ad8ff2e643fd6794bd71e8e193837cf68de40285f57a5f1",
+      "animation": "water-shallow",
+      "frame": 1,
+      "repeatX": true,
+      "repeatY": true
+    },
+    {
+      "id": "water-shallow-2",
+      "file": "terrain/water-shallow-2.png",
+      "size": [
+        16,
+        16
+      ],
+      "role": "terrain",
+      "method": "code-authored pixel sample",
+      "sha256": "17a98bd8ee38fdc9a318f69127cc3a5137e035fe78844442a8a8d6e55695fdf0",
+      "animation": "water-shallow",
+      "frame": 2,
+      "repeatX": true,
+      "repeatY": true
+    },
+    {
+      "id": "water-shallow-3",
+      "file": "terrain/water-shallow-3.png",
+      "size": [
+        16,
+        16
+      ],
+      "role": "terrain",
+      "method": "code-authored pixel sample",
+      "sha256": "ecb2418df91806be14af81c459a0339d04723591851f6bb8f26172c42190e46a",
+      "animation": "water-shallow",
+      "frame": 3,
+      "repeatX": true,
+      "repeatY": true
+    },
+    {
+      "id": "shore-0",
+      "file": "terrain/shore-0.png",
+      "size": [
+        16,
+        16
+      ],
+      "role": "terrain",
+      "method": "code-authored pixel sample",
+      "sha256": "e8cf9854f3c74cc0e22ab472a8f367bd899cf691cd9a8d902f1557ba1bce0d19",
+      "animation": "shore",
+      "frame": 0,
+      "repeatX": true,
+      "repeatY": false
+    },
+    {
+      "id": "shore-1",
+      "file": "terrain/shore-1.png",
+      "size": [
+        16,
+        16
+      ],
+      "role": "terrain",
+      "method": "code-authored pixel sample",
+      "sha256": "c36be2b0f111268b755f1396b89cd3f75a7535d72d47b344346c35a3bffaf367",
+      "animation": "shore",
+      "frame": 1,
+      "repeatX": true,
+      "repeatY": false
+    },
+    {
+      "id": "shore-2",
+      "file": "terrain/shore-2.png",
+      "size": [
+        16,
+        16
+      ],
+      "role": "terrain",
+      "method": "code-authored pixel sample",
+      "sha256": "d1bb07b1f16feead6159e6c042c8c639895438f8d764a299c62f109627d4a204",
+      "animation": "shore",
+      "frame": 2,
+      "repeatX": true,
+      "repeatY": false
+    },
+    {
+      "id": "shore-3",
+      "file": "terrain/shore-3.png",
+      "size": [
+        16,
+        16
+      ],
+      "role": "terrain",
+      "method": "code-authored pixel sample",
+      "sha256": "f6f08e9ba87f3cfcd9e550f7799658ffe59b46c378a0e167f0340041d0cd365e",
+      "animation": "shore",
+      "frame": 3,
+      "repeatX": true,
+      "repeatY": false
+    },
+    {
+      "id": "depth-edge-0",
+      "file": "terrain/depth-edge-0.png",
+      "size": [
+        16,
+        16
+      ],
+      "role": "terrain",
+      "method": "code-authored pixel sample",
+      "sha256": "903caa408bd93f67b7f935cba87b5f56bdf02a46df4176c19d23314dcc92f217",
+      "animation": "depth-edge",
+      "frame": 0,
+      "repeatX": true,
+      "repeatY": false
+    },
+    {
+      "id": "depth-edge-1",
+      "file": "terrain/depth-edge-1.png",
+      "size": [
+        16,
+        16
+      ],
+      "role": "terrain",
+      "method": "code-authored pixel sample",
+      "sha256": "3da7344c23b6135117bc0fed453eb47eafc8c240bf0f256a1cb37a69bc2d192c",
+      "animation": "depth-edge",
+      "frame": 1,
+      "repeatX": true,
+      "repeatY": false
+    },
+    {
+      "id": "depth-edge-2",
+      "file": "terrain/depth-edge-2.png",
+      "size": [
+        16,
+        16
+      ],
+      "role": "terrain",
+      "method": "code-authored pixel sample",
+      "sha256": "7a467aafe62694b6225b42a8032d115d207b58bf9576e823c833e9c9b2d70e3e",
+      "animation": "depth-edge",
+      "frame": 2,
+      "repeatX": true,
+      "repeatY": false
+    },
+    {
+      "id": "depth-edge-3",
+      "file": "terrain/depth-edge-3.png",
+      "size": [
+        16,
+        16
+      ],
+      "role": "terrain",
+      "method": "code-authored pixel sample",
+      "sha256": "f6b4d0337cefcbcf5a556745c666049dd87496c0a0e99b5216dd3d840d5ca2f6",
+      "animation": "depth-edge",
+      "frame": 3,
+      "repeatX": true,
+      "repeatY": false
+    },
+    {
+      "id": "rock-a",
+      "file": "sprites/rock-a.png",
+      "size": [
+        48,
+        40
+      ],
+      "role": "scenery",
+      "method": "reference-derived bounded mask, native nearest-neighbor resample and core-palette mapping; candidate cleanup, not final art",
+      "sha256": "b7f0f703887c59410d3df821ed79267089ef128f93cf41f2ee7ec6835960110d",
+      "referenceCrop": [
+        385,
+        270,
+        605,
+        435
+      ],
+      "anchor": [
+        24,
+        37
+      ]
+    },
+    {
+      "id": "rock-b",
+      "file": "sprites/rock-b.png",
+      "size": [
+        64,
+        48
+      ],
+      "role": "scenery",
+      "method": "reference-derived bounded mask, native nearest-neighbor resample and core-palette mapping; candidate cleanup, not final art",
+      "sha256": "bdb9339035c4eb587435c814c4bb04c5fd8d8697099c8495d1876742a152b513",
+      "referenceCrop": [
+        535,
+        460,
+        825,
+        665
+      ],
+      "anchor": [
+        32,
+        45
+      ]
+    },
+    {
+      "id": "palm",
+      "file": "sprites/palm.png",
+      "size": [
+        80,
+        96
+      ],
+      "role": "scenery",
+      "method": "reference-derived bounded mask, native nearest-neighbor resample and core-palette mapping; candidate cleanup, not final art",
+      "sha256": "a0531d1b873f358c0957ab37eed4f0d63fd4252b79afe9b1fe208b0d154cebd2",
+      "referenceCrop": [
+        1008,
+        484,
+        1324,
+        835
+      ],
+      "anchor": [
+        33,
+        89
+      ]
+    },
+    {
+      "id": "bush",
+      "file": "sprites/bush.png",
+      "size": [
+        32,
+        24
+      ],
+      "role": "scenery",
+      "method": "code-authored pixel sample",
+      "sha256": "8a6e250a697ce486d581d5f0b85fa3884b2afecb51c77a7d18c536670e08ebdb"
+    },
+    {
+      "id": "fern",
+      "file": "sprites/fern.png",
+      "size": [
+        24,
+        24
+      ],
+      "role": "scenery",
+      "method": "code-authored pixel sample",
+      "sha256": "44166b48517bcedabd3f59134f64e23d2677a7c08fd495192b844e4dfd306c8e"
+    },
+    {
+      "id": "flower",
+      "file": "sprites/flower.png",
+      "size": [
+        16,
+        16
+      ],
+      "role": "scenery",
+      "method": "code-authored pixel sample",
+      "sha256": "98c0d7225f2f5a22769a307308f981589d97688fced0933ef561f67f2ba56679"
+    },
+    {
+      "id": "stump",
+      "file": "sprites/stump.png",
+      "size": [
+        16,
+        12
+      ],
+      "role": "scenery",
+      "method": "code-authored pixel sample",
+      "sha256": "9c314608b40c92634f12b1d6c5cd52c165eefa332b833a968bef81b02713cbfc"
+    },
+    {
+      "id": "axe",
+      "file": "sprites/axe.png",
+      "size": [
+        16,
+        16
+      ],
+      "role": "pickup",
+      "method": "code-authored pixel sample",
+      "sha256": "be2d9a285585f4b0d634ed6ab90a5587ef2eddbba3dedcf275b25ca4ea59c522"
+    },
+    {
+      "id": "cheesesteak",
+      "file": "sprites/cheesesteak.png",
+      "size": [
+        24,
+        16
+      ],
+      "role": "pickup",
+      "method": "code-authored pixel sample",
+      "sha256": "372c39628187836b74e2b0bfe36983cf1773141d989a6670586f727c4d4f0725"
+    },
+    {
+      "id": "shadow-rock-a",
+      "file": "sprites/shadow-rock-a.png",
+      "size": [
+        48,
+        16
+      ],
+      "role": "shadow",
+      "method": "code-authored pixel sample",
+      "sha256": "d7411a6744f4c163a6d6831ca03efc7b9974f9837ca86fbdd631eeb779120c65"
+    },
+    {
+      "id": "shadow-rock-b",
+      "file": "sprites/shadow-rock-b.png",
+      "size": [
+        64,
+        16
+      ],
+      "role": "shadow",
+      "method": "code-authored pixel sample",
+      "sha256": "fd38c57676ea1dd779e5d56abd8a60e9b8b18b2a6fb985c248dd19b57be9ffde"
+    },
+    {
+      "id": "shadow-palm",
+      "file": "sprites/shadow-palm.png",
+      "size": [
+        48,
+        16
+      ],
+      "role": "shadow",
+      "method": "code-authored pixel sample",
+      "sha256": "d7411a6744f4c163a6d6831ca03efc7b9974f9837ca86fbdd631eeb779120c65"
+    },
+    {
+      "id": "shadow-small",
+      "file": "sprites/shadow-small.png",
+      "size": [
+        16,
+        6
+      ],
+      "role": "shadow",
+      "method": "code-authored pixel sample",
+      "sha256": "b26a8cba976f555e052008bf12835555b8bf098ca6652170ec9f4be02514ecbb"
+    }
+  ]
+}
