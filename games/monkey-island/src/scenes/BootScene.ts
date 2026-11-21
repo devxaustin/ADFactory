@@ -28,10 +28,13 @@ export class BootScene extends Phaser.Scene {
 
   private makePlayerAnims(): void {
     const rows = { down: 0, left: 1, right: 2, up: 3 };
-    for (const [dir, row] of Object.entries(rows)) {
-      const f = (col: number) => ({ key: 'player', frame: row * 3 + col });
-      this.anims.create({ key: `player-walk-${dir}`, frames: [f(1), f(0), f(2), f(0)], frameRate: 8, repeat: -1 });
-      this.anims.create({ key: `player-idle-${dir}`, frames: [f(0)], frameRate: 1 });
+    for (const key of ['player', 'adventure-player']) {
+      if (!this.textures.exists(key)) continue;
+      for (const [dir, row] of Object.entries(rows)) {
+        const f = (col: number) => ({ key, frame: row * 3 + col });
+        this.anims.create({ key: `${key}-walk-${dir}`, frames: [f(1), f(0), f(2), f(0)], frameRate: 8, repeat: -1 });
+        this.anims.create({ key: `${key}-idle-${dir}`, frames: [f(0)], frameRate: 1 });
+      }
     }
   }
 
