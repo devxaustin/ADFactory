@@ -1,0 +1,117 @@
+{
+  "method": "Production-built Phaser game; real keyboard movement and interactions from normal spawn. No teleports, injected inventory, forced outcomes or manual frame stepping.",
+  "screenshots": [
+    {
+      "file": "beach-phaser-start.png",
+      "sha256": "896dd42211ae3272941ee73f3794958320436b7b4adc69d71e354d9f7fbcf65f"
+    },
+    {
+      "file": "beach-phaser-pickups-and-stump.png",
+      "sha256": "452fd783d0c1b4d4eab3e4e534de43f22e4e20ca48672b3e773cc79e4b6586e4"
+    },
+    {
+      "file": "jungle-phaser-arrival.png",
+      "sha256": "d8758c850dc4c6819642ec90ece8859d2d798f57c4a59b0817364e977931256e"
+    },
+    {
+      "file": "beach-phaser-return.png",
+      "sha256": "0730ff4b1427af2a920253d5ce619ee7cd1b52cf91ebb390fb0388c801043ede"
+    },
+    {
+      "file": "beach-phaser-original.png",
+      "sha256": "a1b7525d9c57637de90ce0aca74fc1b5eaa351308870d14e2d4a32babb2e326b"
+    }
+  ],
+  "checkpoints": [
+    {
+      "action": "collected axe",
+      "inventory": [
+        {
+          "id": "axe",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "action": "collected cheesesteak",
+      "inventory": [
+        {
+          "id": "axe",
+          "count": 1
+        },
+        {
+          "id": "cheesesteak",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "action": "chopped palm with three E presses",
+      "stump": "beach-stump",
+      "inventory": [
+        {
+          "id": "axe",
+          "count": 1
+        },
+        {
+          "id": "cheesesteak",
+          "count": 1
+        },
+        {
+          "id": "wood",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "action": "walked to Jungle through east exit",
+      "location": "jungle"
+    },
+    {
+      "action": "returned to Beach",
+      "stump": true,
+      "pickups": 0,
+      "inventory": [
+        {
+          "id": "axe",
+          "count": 1
+        },
+        {
+          "id": "cheesesteak",
+          "count": 1
+        },
+        {
+          "id": "wood",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "action": "verified original-mode URL",
+      "modular": false,
+      "ground": "ground-beach",
+      "keys": [
+        "pickup",
+        "pickup",
+        "tree-chop"
+      ]
+    }
+  ],
+  "renderer": "WebGL",
+  "pixelArt": true,
+  "bundle": "./assets/index-DTamT6iG.js",
+  "character": {
+    "key": "adventure-player",
+    "size": [
+      20,
+      28
+    ],
+    "feet": [
+      8,
+      6
+    ],
+    "opaqueInventoryCells": 8
+  },
+  "passed": true,
+  "errors": []
+}

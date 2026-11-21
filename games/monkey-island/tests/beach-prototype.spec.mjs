@@ -1,6 +1,6 @@
 import { test, expect, visit, interact, closeDialogue, snapshot } from './helpers.mjs';
 
-test('Beach loads modular terrain while keeping the temporary player', async ({ page }) => {
+test('Beach loads modular terrain with the redesigned player', async ({ page }) => {
   const view = await page.evaluate(() => {
     const scene = window.__game.scene.getScene('Location');
     return {
@@ -8,7 +8,7 @@ test('Beach loads modular terrain while keeping the temporary player', async ({ 
       player: scene.player.texture.key,
     };
   });
-  expect(view).toEqual({ terrain: 'beach-sand-c', player: 'player' });
+  expect(view).toEqual({ terrain: 'beach-sand-c', player: 'adventure-player' });
 });
 
 test('Beach renders two separate rocks with the baseline solid footprints', async ({ page }) => {

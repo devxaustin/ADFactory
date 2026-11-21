@@ -119,12 +119,13 @@ export class LocationScene extends Phaser.Scene {
 
   private createPlayer(): void {
     const { x, y } = this.spawnPoint();
-    this.player = this.physics.add.sprite(x, y, 'player');
+    const key = modularBeachEnabled() ? 'adventure-player' : 'player';
+    this.player = this.physics.add.sprite(x, y, key);
     this.player.setCollideWorldBounds(true);
-    // Collide with the feet only so walking behind things looks right.
-    this.player.body!.setSize(8, 6).setOffset(4, 18);
-    this.player.play('player-idle-down');
-    this.shadow = this.add.image(0, 0, 'shadow');
+    // Keep the same world-space feet despite the new 20x28 artwork.
+    this.player.body!.setSize(8, 6).setOffset(key === 'player' ? 4 : 6, key === 'player' ? 18 : 20);
+    this.player.play(`${key}-idle-down`);
+    this.shadow = this.add.image(0, 0, key === 'player' ? 'shadow' : 'beach-shadow-small');
   }
 
   private createObstacles(): void {
@@ -240,7 +241,7 @@ export class LocationScene extends Phaser.Scene {
     if (v.x !== 0) this.facing = v.x < 0 ? 'left' : 'right';
     else if (v.y !== 0) this.facing = v.y < 0 ? 'up' : 'down';
     const moving = v.lengthSq() > 0;
-    this.player.play(`player-${moving ? 'walk' : 'idle'}-${this.facing}`, true);
+    this.player.play(`${this.player.texture.key}-${moving ? 'walk' : 'idle'}-${this.facing}`, true);
   }
 
   private checkExits(): void {
