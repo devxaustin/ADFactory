@@ -82,21 +82,38 @@ test('chopping without an axe grants no wood or chop progress', async ({ page })
   expect(await page.evaluate(() => __state.count('wood'))).toBe(0);
 });
 
-test('three axe swings yield one wood and a persistent stump', async ({ page }) => {
-  await page.evaluate(() => __state.add('axe'));
-  await interact(page, 'beach-tree');
-  await interact(page, 'beach-tree');
-  expect(await page.evaluate(() => __state.count('wood'))).toBe(0);
-  await interact(page, 'beach-tree');
-  expect(await page.evaluate(() => __state.count('wood'))).toBe(1);
-  expect((await snapshot(page)).flags).toContain('chopped:beach-tree');
-  await visit(page, 'jungle');
-  await visit(page, 'beach');
-  expect(await page.evaluate(() => {
-    const scene = __game.scene.getScene('Location');
-    return { tree: scene.spawned.some(s => s.def.id === 'beach-tree'), stumps: scene.children.list.filter(s => s.texture?.key === 'stump').length };
-  })).toEqual({ tree: false, stumps: 1 });
-});
+for (const mode of ['modular', 'original']) {
+  test(`three axe swings yield one wood and a persistent stump (${mode})`, async ({ page }) => {
+    if (mode === 'original') {
+      await page.goto('/?debug&crt=0&beach=original');
+      await page.waitForFunction(() => window.__game?.scene.isActive('Title'));
+      await page.keyboard.press('e', { delay: 80 });
+      await page.waitForFunction(() => window.__game.scene.isActive('Location'));
+    }
+    const expectedStump = mode === 'original' ? 'stump' : 'beach-stump';
+    const wrongStump = mode === 'original' ? 'beach-stump' : 'stump';
+    await page.evaluate(() => __state.add('axe'));
+    await interact(page, 'beach-tree');
+    await interact(page, 'beach-tree');
+    expect(await page.evaluate(() => __state.count('wood'))).toBe(0);
+    await interact(page, 'beach-tree');
+    expect(await page.evaluate(() => __state.count('wood'))).toBe(1);
+    expect((await snapshot(page)).flags).toContain('chopped:beach-tree');
+    const world = () => page.evaluate(({ expectedStump, wrongStump }) => {
+      const scene = __game.scene.getScene('Location');
+      return {
+        tree: scene.spawned.some(s => s.def.id === 'beach-tree'),
+        stumps: scene.children.list.filter(s => s.texture?.key === expectedStump).length,
+        wrongModeStumps: scene.children.list.filter(s => s.texture?.key === wrongStump).length,
+      };
+    }, { expectedStump, wrongStump });
+    expect(await world()).toEqual({ tree: false, stumps: 1, wrongModeStumps: 0 });
+    await visit(page, 'jungle');
+    await visit(page, 'beach');
+    expect(await world()).toEqual({ tree: false, stumps: 1, wrongModeStumps: 0 });
+    expect(await page.evaluate(() => __state.count('wood'))).toBe(1);
+  });
+}
 
 for (const missing of ['wood', 'rope', 'sail']) {
   test(`raft refuses construction when missing ${missing}`, async ({ page }) => {

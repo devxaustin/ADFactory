@@ -1,0 +1,104 @@
+{
+  "method": "Production-built Phaser game; real keyboard movement and interactions from normal spawn. No teleports, injected inventory, forced outcomes or manual frame stepping.",
+  "screenshots": [
+    {
+      "file": "beach-phaser-start.png",
+      "sha256": "f57d6132f7293e8cc11c22f63824bf6056286a53bdd021b7961a7a1204aacc50"
+    },
+    {
+      "file": "beach-phaser-pickups-and-stump.png",
+      "sha256": "e615819e81bcc93b3c6e14822a68bf55164847278dda1eb7185a775b8b783ee0"
+    },
+    {
+      "file": "jungle-phaser-arrival.png",
+      "sha256": "ac6f4079b6bfd17cbc005564881fbafe1d0b007a6f15a3a8200e054c4a715f6c"
+    },
+    {
+      "file": "beach-phaser-return.png",
+      "sha256": "6918dca4b137b2097a3cd2c6f945f6901985b6cde377c71a78361dce77f730c6"
+    },
+    {
+      "file": "beach-phaser-original.png",
+      "sha256": "98b5e90702197fccfef335beaaaad5122a6fbeadd441a960453ec755c9fd07e2"
+    }
+  ],
+  "checkpoints": [
+    {
+      "action": "collected axe",
+      "inventory": [
+        {
+          "id": "axe",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "action": "collected cheesesteak",
+      "inventory": [
+        {
+          "id": "axe",
+          "count": 1
+        },
+        {
+          "id": "cheesesteak",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "action": "chopped palm with three E presses",
+      "stump": "beach-stump",
+      "inventory": [
+        {
+          "id": "axe",
+          "count": 1
+        },
+        {
+          "id": "cheesesteak",
+          "count": 1
+        },
+        {
+          "id": "wood",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "action": "walked to Jungle through east exit",
+      "location": "jungle"
+    },
+    {
+      "action": "returned to Beach",
+      "stump": true,
+      "pickups": 0,
+      "inventory": [
+        {
+          "id": "axe",
+          "count": 1
+        },
+        {
+          "id": "cheesesteak",
+          "count": 1
+        },
+        {
+          "id": "wood",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "action": "verified original-mode URL",
+      "modular": false,
+      "ground": "ground-beach",
+      "keys": [
+        "pickup",
+        "pickup",
+        "tree-chop"
+      ]
+    }
+  ],
+  "renderer": "WebGL",
+  "pixelArt": true,
+  "passed": true,
+  "errors": []
+}

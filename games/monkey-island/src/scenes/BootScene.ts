@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { preloadBeach } from '../beach/BeachRenderer';
 import { LOCATIONS } from '../data/locations';
 
 type Draw = (g: Phaser.GameObjects.Graphics) => void;
@@ -14,6 +15,7 @@ export class BootScene extends Phaser.Scene {
   }
 
   preload(): void {
+    preloadBeach(this);
     // Player sheet: 3 columns (idle, step, step) x 4 rows (down, left, right, up), 16x24 frames.
     this.load.spritesheet('player', 'sprites/player.png', { frameWidth: 16, frameHeight: 24 });
   }

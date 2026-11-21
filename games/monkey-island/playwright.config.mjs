@@ -11,7 +11,7 @@ export default defineConfig({
     baseURL: 'http://127.0.0.1:4174',
     viewport: { width: 960, height: 540 },
     browserName: 'chromium',
-    channel: 'chromium',
+    channel: process.env.PLAYWRIGHT_CHANNEL || 'chromium',
     launchOptions: { args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'] },
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
