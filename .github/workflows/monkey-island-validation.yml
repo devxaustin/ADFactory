@@ -2,7 +2,7 @@ name: Monkey Island PR validation
 
 on:
   pull_request:
-    branches: [main]
+    branches: [main, test/monkey-island-batch-a]
 
 permissions:
   contents: read

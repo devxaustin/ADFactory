@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { BeachRenderer, modularBeachEnabled } from '../beach/BeachRenderer';
 import { CHOPS_PER_TREE, GAME_H, GAME_W, INTERACT_RANGE, PLAYER_SPEED, WOOD_NEEDED } from '../config';
 import { ITEMS } from '../data/items';
 import { LOCATIONS, type Exit, type Interactable, type LocationDef, type LocationId, type Side, type Trade } from '../data/locations';
@@ -52,6 +53,7 @@ export class LocationScene extends Phaser.Scene {
   private frozen = false;
   private unlockAt = 0;
   private respawn = false;
+  private beach?: BeachRenderer;
 
   constructor() {
     super('Location');
@@ -67,6 +69,7 @@ export class LocationScene extends Phaser.Scene {
     this.gates = [];
     this.nearby = undefined;
     this.leaving = false;
+    this.beach = undefined;
   }
 
   private get hud(): HudScene {
@@ -74,7 +77,8 @@ export class LocationScene extends Phaser.Scene {
   }
 
   create(): void {
-    this.add.tileSprite(0, 0, GAME_W, GAME_H, `ground-${this.def.id}`).setOrigin(0).setDepth(-1000);
+    if (this.def.id === 'beach' && modularBeachEnabled()) this.beach = new BeachRenderer(this);
+    else this.add.tileSprite(0, 0, GAME_W, GAME_H, `ground-${this.def.id}`).setOrigin(0).setDepth(-1000);
 
     this.createPlayer();
     this.createObstacles();
@@ -124,6 +128,10 @@ export class LocationScene extends Phaser.Scene {
   }
 
   private createObstacles(): void {
+    if (this.beach) {
+      this.beach.createObstacles(this.player, this.def.obstacles);
+      return;
+    }
     for (const o of this.def.obstacles) {
       if (o.removedByFlag && GameState.hasFlag(o.removedByFlag)) continue;
       const block = this.add.tileSprite(o.x + o.w / 2, o.y + o.h / 2, o.w, o.h, o.kind).setDepth(o.y + o.h - 1);
@@ -159,7 +167,8 @@ export class LocationScene extends Phaser.Scene {
       if (def.hideWhen && GameState.hasFlag(def.hideWhen)) continue;
       if (def.kind === 'pickup' && GameState.hasFlag(`taken:${def.id}`)) continue;
       if (def.kind === 'tree' && GameState.hasFlag(`chopped:${def.id}`)) {
-        this.add.image(def.x, def.y + 8, 'stump').setDepth(def.y + 12);
+        if (this.beach) this.beach.addStump(def.x, def.y);
+        else this.add.image(def.x, def.y + 8, 'stump').setDepth(def.y + 12);
         continue;
       }
       this.spawn(def);
@@ -168,7 +177,7 @@ export class LocationScene extends Phaser.Scene {
 
   private spawn(def: Interactable): void {
     const key = def.kind === 'pickup' ? 'pickup' : def.kind === 'tree' ? 'tree-chop' : def.kind === 'raft' ? 'raft-site' : (def.sprite ?? 'npc');
-    const sprite = this.physics.add.sprite(def.x, def.y, key) as Spawned['sprite'];
+    const sprite = this.physics.add.sprite(def.x, def.y, this.beach?.textureFor(def) ?? key) as Spawned['sprite'];
 
     if (def.kind === 'pickup') {
       sprite.setTint(def.item ? ITEMS[def.item].color : 0xffffff).setDepth(def.y - 1);
@@ -184,6 +193,7 @@ export class LocationScene extends Phaser.Scene {
       sprite.setDepth(sprite.body.bottom);
       this.physics.add.collider(this.player, sprite);
     }
+    this.beach?.decorate(def, sprite);
     this.spawned.push({ def, sprite });
   }
 
@@ -432,7 +442,8 @@ export class LocationScene extends Phaser.Scene {
     this.floatText(sprite.x, sprite.y - 18, `+1 Wood (${GameState.count('wood')}/${WOOD_NEEDED})`);
     const { x, y } = def;
     this.remove(target);
-    this.add.image(x, y + 8, 'stump').setDepth(y + 12);
+    if (this.beach) this.beach.addStump(x, y);
+    else this.add.image(x, y + 8, 'stump').setDepth(y + 12);
   }
 
   private buildRaft(): void {
